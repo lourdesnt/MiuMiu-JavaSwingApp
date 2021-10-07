@@ -16,7 +16,7 @@ import javax.swing.ImageIcon;
  *
  * @author Lourdes
  */
-public class MiuMiuPpal extends javax.swing.JFrame {
+public class Menu extends javax.swing.JFrame {
     
     ImageIcon img = new ImageIcon("src/resources/icon.png");
     static Font pixelMplus;
@@ -24,7 +24,7 @@ public class MiuMiuPpal extends javax.swing.JFrame {
     /**
      * Creates new form MiuMiuPpal
      */
-    public MiuMiuPpal() {
+    public Menu() {
         initComponents();
     }
 
@@ -46,14 +46,13 @@ public class MiuMiuPpal extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("MiuMiu");
         setIconImage(img.getImage());
-        setPreferredSize(new java.awt.Dimension(700, 600));
         setResizable(false);
         setSize(new java.awt.Dimension(700, 600));
 
         panelPpal.setBackground(new java.awt.Color(254, 236, 214));
         panelPpal.setPreferredSize(new java.awt.Dimension(600, 800));
 
-        iconPpal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/ppal1.gif"))); // NOI18N
+        iconPpal.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/ppal.gif"))); // NOI18N
 
         title.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/title.png"))); // NOI18N
 
@@ -83,27 +82,27 @@ public class MiuMiuPpal extends javax.swing.JFrame {
         panelPpalLayout.setHorizontalGroup(
             panelPpalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelPpalLayout.createSequentialGroup()
-                .addGroup(panelPpalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelPpalLayout.createSequentialGroup()
-                        .addGap(211, 211, 211)
-                        .addGroup(panelPpalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnCont, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(panelPpalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(title, javax.swing.GroupLayout.PREFERRED_SIZE, 255, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(panelPpalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(panelPpalLayout.createSequentialGroup()
+                            .addGap(211, 211, 211)
                             .addGroup(panelPpalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                .addComponent(btnNew, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                .addComponent(title, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
-                    .addGroup(panelPpalLayout.createSequentialGroup()
-                        .addGap(219, 219, 219)
-                        .addComponent(iconPpal, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(btnCont, javax.swing.GroupLayout.DEFAULT_SIZE, 247, Short.MAX_VALUE)
+                                .addComponent(btnNew, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGroup(panelPpalLayout.createSequentialGroup()
+                            .addGap(219, 219, 219)
+                            .addComponent(iconPpal, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE))))
                 .addContainerGap(235, Short.MAX_VALUE))
         );
         panelPpalLayout.setVerticalGroup(
             panelPpalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(panelPpalLayout.createSequentialGroup()
                 .addGap(35, 35, 35)
-                .addComponent(title)
+                .addComponent(title, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(58, 58, 58)
-                .addComponent(iconPpal)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 82, Short.MAX_VALUE)
+                .addComponent(iconPpal, javax.swing.GroupLayout.PREFERRED_SIZE, 210, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 69, Short.MAX_VALUE)
                 .addComponent(btnNew, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(28, 28, 28)
                 .addComponent(btnCont, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -127,7 +126,7 @@ public class MiuMiuPpal extends javax.swing.JFrame {
     private void btnNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewActionPerformed
         // TODO add your handling code here:
         this.setVisible(false);
-        IniciarJuego init = new IniciarJuego();
+        Datos init = new Datos();
         init.setVisible(true);
     }//GEN-LAST:event_btnNewActionPerformed
 
@@ -148,20 +147,21 @@ public class MiuMiuPpal extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(MiuMiuPpal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Menu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(MiuMiuPpal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Menu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(MiuMiuPpal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Menu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(MiuMiuPpal.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Menu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new MiuMiuPpal().setVisible(true);
+                new Menu().setVisible(true);
             }
         });
         

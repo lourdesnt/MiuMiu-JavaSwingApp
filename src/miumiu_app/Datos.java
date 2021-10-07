@@ -10,25 +10,72 @@ import java.awt.FontFormatException;
 import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.IOException;
+import java.util.Locale;
 import javax.swing.ImageIcon;
-import static miumiu_app.MiuMiuPpal.pixelMplus;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+import static miumiu_app.Menu.pixelMplus;
+import org.netbeans.validation.api.builtin.stringvalidation.StringValidators;
+import org.netbeans.validation.api.ui.ValidationGroup;
 
 /**
  *
  * @author Lourdes
  */
-public class IniciarJuego extends javax.swing.JFrame {
+public class Datos extends javax.swing.JFrame {
     
     ImageIcon img;
-    
+    static String MiuMiuName;
 
     /**
      * Creates new form IniciarJuego
      */
-    public IniciarJuego() {
+    @SuppressWarnings("unchecked")
+    public Datos() {
         img = new ImageIcon("src/resources/icon.png");
-        Font pixelMplus;
+        
         initComponents();
+        
+        ValidationGroup group1 = validationMMName.getValidationGroup();
+        ValidationGroup group2 = validationName.getValidationGroup();
+        ValidationGroup group3 = validationAge.getValidationGroup();
+        group1.add(fieldName, StringValidators.REQUIRE_NON_EMPTY_STRING);
+        group2.add(fieldAge, StringValidators.REQUIRE_NON_EMPTY_STRING, StringValidators.REQUIRE_VALID_INTEGER, StringValidators.REQUIRE_NON_NEGATIVE_NUMBER);
+        group3.add(fieldMMName, StringValidators.REQUIRE_NON_EMPTY_STRING);
+    
+        validationName.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e){
+                if(validationName.getProblem()==null){
+                    btnNext.setEnabled(true);
+                } else {
+                    btnNext.setEnabled(false);
+                }
+            }
+        });
+        
+        validationMMName.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e){
+                if(validationMMName.getProblem()==null){
+                    btnNext.setEnabled(true);
+                } else {
+                    btnNext.setEnabled(false);
+                }
+            }
+        });
+        
+        validationAge.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e){
+                if(validationAge.getProblem()==null){
+                    btnNext.setEnabled(true);
+                } else {
+                    btnNext.setEnabled(false);
+                }
+            }
+        });
+        
     }
 
     /**
@@ -44,16 +91,18 @@ public class IniciarJuego extends javax.swing.JFrame {
         lbLogIn = new javax.swing.JLabel();
         lbName = new javax.swing.JLabel();
         fieldName = new javax.swing.JTextField();
+        validationName = new org.netbeans.validation.api.ui.swing.ValidationPanel();
         lbAge = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
+        fieldAge = new javax.swing.JTextField();
+        validationAge = new org.netbeans.validation.api.ui.swing.ValidationPanel();
         lbLogIn1 = new javax.swing.JLabel();
+        validationMMName = new org.netbeans.validation.api.ui.swing.ValidationPanel();
         fieldMMName = new javax.swing.JTextField();
         btnNext = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("MiuMiu");
         setIconImage(img.getImage());
-        setPreferredSize(new java.awt.Dimension(700, 600));
         setResizable(false);
         setSize(new java.awt.Dimension(700, 600));
 
@@ -70,19 +119,26 @@ public class IniciarJuego extends javax.swing.JFrame {
         fieldName.setFont(new java.awt.Font("Verdana", 0, 24)); // NOI18N
         fieldName.setForeground(new java.awt.Color(153, 153, 153));
 
+        validationName.setBackground(new java.awt.Color(254, 236, 214));
+
         lbAge.setFont(pixelMplus);
         lbAge.setForeground(new java.awt.Color(163, 159, 225));
         lbAge.setText("Tu edad:");
 
-        jTextField1.setFont(new java.awt.Font("Verdana", 0, 24)); // NOI18N
-        jTextField1.setForeground(new java.awt.Color(153, 153, 153));
+        fieldAge.setFont(new java.awt.Font("Verdana", 0, 24)); // NOI18N
+        fieldAge.setForeground(new java.awt.Color(153, 153, 153));
+
+        validationAge.setBackground(new java.awt.Color(254, 236, 214));
 
         lbLogIn1.setFont(pixelMplus);
         lbLogIn1.setForeground(new java.awt.Color(255, 102, 153));
         lbLogIn1.setText("Tu MiuMiu se llamará...");
 
+        validationMMName.setBackground(new java.awt.Color(254, 236, 214));
+
         fieldMMName.setFont(new java.awt.Font("Verdana", 0, 24)); // NOI18N
         fieldMMName.setForeground(new java.awt.Color(153, 153, 153));
+        fieldMMName.setHorizontalAlignment(javax.swing.JTextField.CENTER);
 
         btnNext.setBackground(new java.awt.Color(255, 255, 255));
         btnNext.setForeground(new java.awt.Color(105, 171, 99));
@@ -111,14 +167,18 @@ public class IniciarJuego extends javax.swing.JFrame {
                                     .addComponent(lbName)
                                     .addComponent(lbAge))
                                 .addGap(52, 52, 52)
-                                .addGroup(panelISLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(fieldName, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                                .addGroup(panelISLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                                    .addComponent(fieldName, javax.swing.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE)
+                                    .addComponent(fieldAge, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(validationName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                    .addComponent(validationAge, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                         .addGap(98, 98, 98))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelISLayout.createSequentialGroup()
                         .addGroup(panelISLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(fieldMMName, javax.swing.GroupLayout.PREFERRED_SIZE, 306, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lbLogIn1, javax.swing.GroupLayout.PREFERRED_SIZE, 362, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(lbLogIn1, javax.swing.GroupLayout.PREFERRED_SIZE, 362, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addGroup(panelISLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                .addComponent(fieldMMName, javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(validationMMName, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE)))
                         .addGap(155, 155, 155))))
             .addGroup(panelISLayout.createSequentialGroup()
                 .addGap(278, 278, 278)
@@ -134,17 +194,23 @@ public class IniciarJuego extends javax.swing.JFrame {
                 .addGroup(panelISLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(fieldName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lbName))
-                .addGap(45, 45, 45)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(validationName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(10, 10, 10)
                 .addGroup(panelISLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(fieldAge, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lbAge))
-                .addGap(45, 45, 45)
+                .addGap(5, 5, 5)
+                .addComponent(validationAge, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(lbLogIn1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(fieldMMName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(44, 44, 44)
+                .addComponent(fieldMMName, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(validationMMName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(9, 9, 9)
                 .addComponent(btnNext, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(109, Short.MAX_VALUE))
+                .addContainerGap(100, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -163,7 +229,10 @@ public class IniciarJuego extends javax.swing.JFrame {
 
     private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
         // TODO add your handling code here:
-        
+        MiuMiuName = fieldMMName.getText();
+        Juego newGame = new Juego();
+        newGame.setVisible(true);
+        this.setVisible(false);
     }//GEN-LAST:event_btnNextActionPerformed
 
     /**
@@ -183,22 +252,26 @@ public class IniciarJuego extends javax.swing.JFrame {
                 }
             }
         } catch (ClassNotFoundException ex) {
-            java.util.logging.Logger.getLogger(IniciarJuego.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Datos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
-            java.util.logging.Logger.getLogger(IniciarJuego.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Datos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (IllegalAccessException ex) {
-            java.util.logging.Logger.getLogger(IniciarJuego.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Datos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
-            java.util.logging.Logger.getLogger(IniciarJuego.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
+            java.util.logging.Logger.getLogger(Datos.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new IniciarJuego().setVisible(true);
+                new Datos().setVisible(true);
             }
         });
+        
+        Locale.setDefault(new Locale("es", "ES"));
+        new Datos().setVisible(true);
         
         try{
             pixelMplus = Font.createFont(Font.TRUETYPE_FONT, new File("src/resources/PixelMplus10-Regular.ttf")).deriveFont(30f);	
@@ -207,17 +280,21 @@ public class IniciarJuego extends javax.swing.JFrame {
 	} catch(IOException | FontFormatException e){
             e.printStackTrace();
 	}
+        
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnNext;
+    private javax.swing.JTextField fieldAge;
     private javax.swing.JTextField fieldMMName;
     private javax.swing.JTextField fieldName;
-    private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel lbAge;
     private javax.swing.JLabel lbLogIn;
     private javax.swing.JLabel lbLogIn1;
     private javax.swing.JLabel lbName;
     private javax.swing.JPanel panelIS;
+    private org.netbeans.validation.api.ui.swing.ValidationPanel validationAge;
+    private org.netbeans.validation.api.ui.swing.ValidationPanel validationMMName;
+    private org.netbeans.validation.api.ui.swing.ValidationPanel validationName;
     // End of variables declaration//GEN-END:variables
 }
