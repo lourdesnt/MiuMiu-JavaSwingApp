@@ -22,11 +22,11 @@ import static miumiu_app.Menu.pixelMplus;
  */
 public class Juego extends javax.swing.JFrame {
     
-    ImageIcon img, standing, eating, sleeping, training, cleaning, dirty, lvlup, dead;
+    ImageIcon img, standing, eating, sleeping, training, cleaning, dirty, lvlup, dead, state;
     MiuMiu m;
     Timer timer;
     TimerTask tarea;
-    static int c=0;
+    boolean doingAction;
 
     /**
      * Creates new form Juego
@@ -35,59 +35,83 @@ public class Juego extends javax.swing.JFrame {
         img = new ImageIcon("src/resources/icon.png");
         standing = new ImageIcon("src/resources/standing.gif");
         eating = new ImageIcon("src/resources/eating.gif");
+        sleeping = new ImageIcon("src/resources/sleeping.gif");
+        training = new ImageIcon("src/resources/training.gif");
+        cleaning = new ImageIcon("src/resources/clean.gif");
         dirty = new ImageIcon("src/resources/dirty.gif");
         lvlup = new ImageIcon("src/resources/lvlup.gif");
         dead = new ImageIcon("src/resources/dead.gif");
+        
+        state = standing;
+        
         m = new MiuMiu(Datos.MiuMiuName);
+        
+        doingAction = false;
         
         initComponents();
         
-       lbMiuName.setText(m.getName());
-       lbMiuLevel.setText("Nivel "+m.getNivel());
+        lbMiuName.setText(m.getName());
+        lbMiuLevel.setText("Nivel "+m.getNivel());
        
-       updateProgress();
+        updateProgress();
     }
     
     private void updateProgress(){
-       progrHambre.setValue(m.getHambre());
-       progrSuciedad.setValue(m.getSuciedad());
-       progrFuerza.setValue(m.getFuerza());
-       progrEnergia.setValue(m.getEnergia());
-       progrFelicidad.setValue(m.getFelicidad());
-       progrExp.setValue(m.getExperiencia());
+       progrHambre.setValue((int) m.getHambre());
+       progrSuciedad.setValue((int)m.getSuciedad());
+       progrFuerza.setValue((int)m.getFuerza());
+       progrEnergia.setValue((int)m.getEnergia());
+       progrFelicidad.setValue((int)m.getFelicidad());
+       progrExp.setValue((int)m.getExperiencia());
     }
     
     private void levelUp(){
-        if(m.getExperiencia()>=100){
+        if(m.getExperiencia()>=100 && !doingAction){
+            doingAction = true;
             int nivel = m.getNivel();
-            m = new MiuMiu(Datos.MiuMiuName);
             m.setNivel(nivel+1);
+            m.setExperiencia(0);
+            m.setFuerza(0);
             lbMiuLevel.setText("Nivel "+m.getNivel());
-            tarea = new TimerTask() {
+            
+            MiuCh.setIcon(lvlup);
+
+            tarea = new TimerTask(){
             @Override
-            public void run() {
-                switch(c){
-                    case 0: c=1; MiuCh.setIcon(lvlup); break;
-                    case 1: MiuCh.setIcon(standing); break;
+                public void run() {
+                    MiuCh.setIcon(state);
+                    doingAction = false;
                 }
-            }
-        };
+            };
         
-        timer = new Timer();
-        timer.scheduleAtFixedRate(tarea, 0, 500);
+            timer = new Timer();
+            timer.schedule(tarea, 1000);
+            
+            if(m.getNivel()==10){
+                dialogWin.setVisible(true);
+            }
         }
     }
     
-    private void muere(){
-        if(m.getEnergia()<0){
+    private void muerto(){
+        if(m.getEnergia()<0 && !doingAction){
+            doingAction = true;
             MiuCh.setIcon(dead);
             m.muerto();
+            dialogGameOver.setVisible(true);
         }
     }
     
     private void sucio(){
-        if(m.getSuciedad()>=100){
-            MiuCh.setIcon(dirty);
+        if(m.getSuciedad()==100 && !doingAction){
+            state = dirty;
+            m.addFelicidad(-50);
+        }
+    }
+    
+    private void hambriento(){
+        if(m.getHambre()>=100){
+            m.addEnergia(-10);
         }
     }
 
@@ -100,6 +124,18 @@ public class Juego extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        dialogWin = new javax.swing.JDialog();
+        panelPpal = new javax.swing.JPanel();
+        lbWin = new javax.swing.JLabel();
+        lbWin2 = new javax.swing.JLabel();
+        lbWin3 = new javax.swing.JLabel();
+        lbMiuWin = new javax.swing.JLabel();
+        dialogGameOver = new javax.swing.JDialog();
+        panelPpal2 = new javax.swing.JPanel();
+        lbGOver = new javax.swing.JLabel();
+        lbGOver2 = new javax.swing.JLabel();
+        lbGOver3 = new javax.swing.JLabel();
+        btnAgain = new javax.swing.JButton();
         panelGame = new javax.swing.JPanel();
         lbMiuLevel = new javax.swing.JLabel();
         MiuCh = new javax.swing.JLabel();
@@ -120,6 +156,123 @@ public class Juego extends javax.swing.JFrame {
         progrFelicidad = new javax.swing.JProgressBar();
         progrExp = new javax.swing.JProgressBar();
         lbMiuName = new javax.swing.JLabel();
+
+        dialogWin.setTitle("MiuMiu");
+        dialogWin.setIconImage(img.getImage());
+        dialogWin.setPreferredSize(new java.awt.Dimension(500, 400));
+        dialogWin.setSize(new java.awt.Dimension(500, 400));
+
+        panelPpal.setBackground(new java.awt.Color(254, 236, 214));
+
+        lbWin.setFont(new java.awt.Font("Verdana", 0, 18)); // NOI18N
+        lbWin.setForeground(new java.awt.Color(89, 173, 208));
+        lbWin.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lbWin.setText("¡ENHORABUENA!");
+
+        lbWin2.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
+        lbWin2.setForeground(new java.awt.Color(255, 102, 255));
+        lbWin2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lbWin2.setText("¡Tu MiuMiu ha crecido mucho!");
+
+        lbWin3.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
+        lbWin3.setForeground(new java.awt.Color(105, 171, 99));
+        lbWin3.setText("Ahora es muy sano, fuerte y feliz gracias a ti :)");
+
+        lbMiuWin.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/victory.gif"))); // NOI18N
+
+        javax.swing.GroupLayout panelPpalLayout = new javax.swing.GroupLayout(panelPpal);
+        panelPpal.setLayout(panelPpalLayout);
+        panelPpalLayout.setHorizontalGroup(
+            panelPpalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelPpalLayout.createSequentialGroup()
+                .addGroup(panelPpalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(panelPpalLayout.createSequentialGroup()
+                        .addGap(92, 92, 92)
+                        .addComponent(lbMiuWin))
+                    .addGroup(panelPpalLayout.createSequentialGroup()
+                        .addGap(121, 121, 121)
+                        .addComponent(lbWin2))
+                    .addGroup(panelPpalLayout.createSequentialGroup()
+                        .addGap(148, 148, 148)
+                        .addComponent(lbWin))
+                    .addGroup(panelPpalLayout.createSequentialGroup()
+                        .addGap(83, 83, 83)
+                        .addComponent(lbWin3)))
+                .addContainerGap(223, Short.MAX_VALUE))
+        );
+        panelPpalLayout.setVerticalGroup(
+            panelPpalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panelPpalLayout.createSequentialGroup()
+                .addContainerGap(46, Short.MAX_VALUE)
+                .addComponent(lbWin)
+                .addGap(18, 18, 18)
+                .addComponent(lbWin2)
+                .addGap(18, 18, 18)
+                .addComponent(lbWin3)
+                .addGap(39, 39, 39)
+                .addComponent(lbMiuWin)
+                .addGap(22, 22, 22))
+        );
+
+        javax.swing.GroupLayout dialogWinLayout = new javax.swing.GroupLayout(dialogWin.getContentPane());
+        dialogWin.getContentPane().setLayout(dialogWinLayout);
+        dialogWinLayout.setHorizontalGroup(
+            dialogWinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(panelPpal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+        dialogWinLayout.setVerticalGroup(
+            dialogWinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(panelPpal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+        );
+
+        dialogGameOver.setTitle("MiuMiu");
+        dialogGameOver.setIconImage(img.getImage());
+        dialogGameOver.setPreferredSize(new java.awt.Dimension(600, 337));
+        dialogGameOver.setResizable(false);
+        dialogGameOver.setSize(new java.awt.Dimension(600, 337));
+
+        panelPpal2.setBackground(new java.awt.Color(254, 236, 214));
+        panelPpal2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
+
+        lbGOver.setFont(new java.awt.Font("Verdana", 0, 18)); // NOI18N
+        lbGOver.setForeground(new java.awt.Color(153, 153, 153));
+        lbGOver.setText("¡Oh no!");
+        panelPpal2.add(lbGOver, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 50, -1, -1));
+
+        lbGOver2.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
+        lbGOver2.setForeground(new java.awt.Color(112, 149, 225));
+        lbGOver2.setText("No has cuidado bien a tu MiuMiu y se ha quedado sin energía :(");
+        panelPpal2.add(lbGOver2, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 90, -1, -1));
+
+        lbGOver3.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
+        lbGOver3.setForeground(new java.awt.Color(153, 153, 255));
+        lbGOver3.setText("¿Quieres volver a intentarlo?");
+        panelPpal2.add(lbGOver3, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 140, -1, -1));
+
+        btnAgain.setBackground(new java.awt.Color(255, 255, 255));
+        btnAgain.setFont(pixelMplus);
+        btnAgain.setForeground(new java.awt.Color(105, 171, 99));
+        btnAgain.setText("Volver a intentar");
+        btnAgain.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(105, 171, 99), 1, true));
+        btnAgain.setContentAreaFilled(false);
+        btnAgain.setOpaque(true);
+        btnAgain.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnAgainActionPerformed(evt);
+            }
+        });
+        panelPpal2.add(btnAgain, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 220, 260, 48));
+
+        javax.swing.GroupLayout dialogGameOverLayout = new javax.swing.GroupLayout(dialogGameOver.getContentPane());
+        dialogGameOver.getContentPane().setLayout(dialogGameOverLayout);
+        dialogGameOverLayout.setHorizontalGroup(
+            dialogGameOverLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(panelPpal2, javax.swing.GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)
+        );
+        dialogGameOverLayout.setVerticalGroup(
+            dialogGameOverLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(panelPpal2, javax.swing.GroupLayout.DEFAULT_SIZE, 337, Short.MAX_VALUE)
+        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("MiuMiu");
@@ -257,7 +410,10 @@ public class Juego extends javax.swing.JFrame {
                 .addGap(36, 36, 36)
                 .addComponent(btnSleep)
                 .addContainerGap(33, Short.MAX_VALUE))
-            .addComponent(MiuCh, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelGameLayout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(MiuCh, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(166, 166, 166))
         );
         panelGameLayout.setVerticalGroup(
             panelGameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -284,9 +440,9 @@ public class Juego extends javax.swing.JFrame {
                             .addComponent(lbExp))
                         .addGap(42, 42, 42)
                         .addComponent(lbMiuLevel, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 18, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(MiuCh)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
                 .addGroup(panelGameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnSleep, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelGameLayout.createSequentialGroup()
@@ -315,46 +471,110 @@ public class Juego extends javax.swing.JFrame {
 
     private void btnEatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEatActionPerformed
         // TODO add your handling code here:
-        if(m.getHambre()>0){
-            m.comer();
-        }
+        if(!doingAction){
+            boolean res = m.comer();
+            if(res){
+                doingAction = true;
+                MiuCh.setIcon(eating);
+
+                tarea = new TimerTask(){
+                @Override
+                    public void run() {
+                        MiuCh.setIcon(state);
+                        doingAction = false;
+                        sucio();
+                        levelUp();
+                        muerto();
+                        updateProgress();
+                    }
+                };
         
-        tarea = new TimerTask() {
-            @Override
-            public void run() {
-                switch(c){
-                    case 0: c=1; MiuCh.setIcon(eating); break;
-                    case 1: MiuCh.setIcon(standing); break;
-                }
+                timer = new Timer();
+                timer.schedule(tarea, 1000);
             }
-        };
-        
-        timer = new Timer();
-        timer.scheduleAtFixedRate(tarea, 0, 500);
-        
-        updateProgress();
-        
-        sucio();
-        levelUp();
+        }
     }//GEN-LAST:event_btnEatActionPerformed
 
     private void btnBathActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBathActionPerformed
         // TODO add your handling code here:
-        m.limpiar();
-        updateProgress();
+        if(m.getSuciedad()>0 && !doingAction){
+            doingAction = true;
+            m.limpiar();
+            state = standing;
+            MiuCh.setIcon(cleaning);
+
+            tarea = new TimerTask(){
+            @Override
+                public void run() {
+                    MiuCh.setIcon(state);
+                    doingAction = false;
+                    hambriento();
+                    levelUp();
+                    updateProgress();
+                }
+            };
+        
+            timer = new Timer();
+            timer.schedule(tarea, 1300);
+        }
     }//GEN-LAST:event_btnBathActionPerformed
 
     private void btnTrainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTrainActionPerformed
         // TODO add your handling code here:
-        m.entrenar();
-        updateProgress();
+        if(!doingAction){
+            boolean res = m.entrenar();
+            if(res){
+                doingAction = true;
+                MiuCh.setIcon(training);
+
+                tarea = new TimerTask(){
+                    @Override
+                    public void run() {
+                        MiuCh.setIcon(state);
+                        doingAction = false;
+                        hambriento();
+                        sucio();
+                        levelUp();
+                        muerto();
+                        updateProgress();
+                    }
+                };
+        
+                timer = new Timer();
+                timer.schedule(tarea, 1000);
+            }
+        }
     }//GEN-LAST:event_btnTrainActionPerformed
 
     private void btnSleepActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSleepActionPerformed
         // TODO add your handling code here:
-        m.dormir();
-        updateProgress();
+        if(m.getEnergia()<50 && !doingAction){
+           doingAction = true;
+           m.dormir();
+           MiuCh.setIcon(sleeping);
+
+            tarea = new TimerTask(){
+            @Override
+                public void run() {
+                    MiuCh.setIcon(state);
+                    doingAction = false;
+                    hambriento();
+                    levelUp();
+                    updateProgress();
+                }
+            };
+        
+            timer = new Timer();
+            timer.schedule(tarea, 2000);
+        }
     }//GEN-LAST:event_btnSleepActionPerformed
+
+    private void btnAgainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgainActionPerformed
+        // TODO add your handling code here:
+        Datos d = new Datos();
+        this.dispose();
+        d.setVisible(true);
+    }//GEN-LAST:event_btnAgainActionPerformed
 
     /**
      * @param args the command line arguments
@@ -401,19 +621,31 @@ public class Juego extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel MiuCh;
+    private javax.swing.JButton btnAgain;
     private javax.swing.JButton btnBath;
     private javax.swing.JButton btnEat;
     private javax.swing.JButton btnSleep;
     private javax.swing.JButton btnTrain;
+    private javax.swing.JDialog dialogGameOver;
+    private javax.swing.JDialog dialogWin;
     private javax.swing.JLabel lbEnergia;
     private javax.swing.JLabel lbExp;
     private javax.swing.JLabel lbFelicidad;
     private javax.swing.JLabel lbFuerza;
+    private javax.swing.JLabel lbGOver;
+    private javax.swing.JLabel lbGOver2;
+    private javax.swing.JLabel lbGOver3;
     private javax.swing.JLabel lbHambre;
     private javax.swing.JLabel lbMiuLevel;
     private javax.swing.JLabel lbMiuName;
+    private javax.swing.JLabel lbMiuWin;
     private javax.swing.JLabel lbSuciedad;
+    private javax.swing.JLabel lbWin;
+    private javax.swing.JLabel lbWin2;
+    private javax.swing.JLabel lbWin3;
     private javax.swing.JPanel panelGame;
+    private javax.swing.JPanel panelPpal;
+    private javax.swing.JPanel panelPpal2;
     private javax.swing.JProgressBar progrEnergia;
     private javax.swing.JProgressBar progrExp;
     private javax.swing.JProgressBar progrFelicidad;

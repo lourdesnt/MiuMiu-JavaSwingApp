@@ -12,103 +12,168 @@ package character;
 public class MiuMiu {
     
     String name;
-    int energia, hambre, fuerza, suciedad, felicidad, experiencia, nivel;
+    float energia, hambre, fuerza, suciedad, felicidad, experiencia;
+    int nivel;
     
     public MiuMiu(String name){
         this.name=name;
-        this.energia=50;
-        this.hambre=20;
-        this.fuerza=20;
-        this.suciedad=20;
-        this.felicidad=50;
+        this.energia=90;
+        this.hambre=10;
+        this.fuerza=0;
+        this.suciedad=10;
+        this.felicidad=10;
         this.experiencia=0;
         this.nivel=1;
     }
     
-    public void comer(){
-        energia+=20;
-        hambre-=50;
-        suciedad+=10;
-        felicidad+=20;
-        experiencia+=10;
+    public boolean comer(){
+        boolean res = addHambre(-10);
+        if (res){
+            addEnergia(10);
+            addSuciedad(10);
+            addFelicidad(4);
+            setExperiencia(experiencia+1+getFuerza()*0.1f);
+        }
+        return res;
     }
     
-    public void entrenar(){
-        energia-=30;
-        hambre+=20;
-        fuerza+=30;
-        suciedad+=30;
-        felicidad+=20;
-        experiencia+=10;
+    public boolean entrenar(){
+        boolean res = addFuerza(10);
+        if (res){
+            addEnergia(-10);
+            if(getEnergia()>0){
+                addHambre(10);
+                addSuciedad(10);
+                addFelicidad(1);
+                setExperiencia(experiencia+4);
+            } 
+        }
+        return res;
     }
     
     public void limpiar(){
-        suciedad=0;
-        felicidad+=20;
-        experiencia+=10;
+        setSuciedad(0);
+        addFelicidad(2);
+        setExperiencia(experiencia+2);
     }
     
     public void dormir(){
-        energia=100;
-        felicidad+=20;
-        experiencia+=10;
+        setEnergia(100);
+        addFelicidad(3);
+        setExperiencia(experiencia+1);
     }
     
     public void muerto(){
-        energia=0;
-        hambre=0;
-        fuerza=0;
-        suciedad=0;
-        felicidad=0;
-        experiencia=0;
+        setEnergia(0);
+        setHambre(0);
+        setFuerza(0);
+        setSuciedad(0);
+        setFelicidad(0);
+        setExperiencia(0);
     }
     
-    public int getEnergia() {
+    public float getEnergia() {
         return energia;
     }
 
-    public void setEnergia(int energia) {
-        this.energia = energia;
+    public boolean setEnergia(float energia) {
+        this.energia = (energia>100) ? 100 : energia;
+        return true;
+    }
+    
+    public boolean addEnergia(float sumando){
+        return setEnergia(energia + sumando);
     }
 
-    public int getHambre() {
+    public float getHambre() {
         return hambre;
     }
 
-    public void setHambre(int hambre) {
-        this.hambre = hambre;
+    public boolean setHambre(float hambre) {
+        boolean res = true;
+        if(hambre<0){
+            return false;
+        }
+        if(hambre>100){
+            this.hambre=100;
+        } else {
+            this.hambre=hambre;
+        }
+        return res;
+    }
+    
+    public boolean addHambre(float sumando){
+        return setHambre(hambre + sumando); 
     }
 
-    public int getFuerza() {
+    public float getFuerza() {
         return fuerza;
     }
 
-    public void setFuerza(int fuerza) {
-        this.fuerza = fuerza;
+    public boolean setFuerza(float fuerza) {
+        boolean res = true;
+        if(fuerza<0){
+            return false;
+        }
+        this.fuerza = (fuerza>100) ? 100 : fuerza;
+        return res;
+    }
+    
+    public boolean addFuerza(float sumando){
+        return setFuerza(fuerza + sumando);
     }
 
-    public int getSuciedad() {
+    public float getSuciedad() {
         return suciedad;
     }
 
-    public void setSuciedad(int suciedad) {
-        this.suciedad = suciedad;
+    public boolean setSuciedad(float suciedad) {
+        boolean res = true;
+        if(suciedad<0){
+            return false;
+        }
+        if(suciedad>100){
+            this.suciedad=100;
+        } else {
+            this.suciedad=suciedad;
+        }
+        return res;
+    }
+    
+    public boolean addSuciedad(float sumando){
+        return setSuciedad(suciedad + sumando);
     }
 
-    public int getFelicidad() {
+    public float getFelicidad() {
         return felicidad;
     }
 
-    public void setFelicidad(int felicidad) {
-        this.felicidad = felicidad;
+    public boolean setFelicidad(float felicidad) {
+        boolean res = true;
+         if(felicidad<0){
+            this.felicidad=0;
+            
+        }
+        if(suciedad>=100 && this.felicidad<felicidad){
+            return false;
+        }
+       
+        this.felicidad = (felicidad>100) ? 100 : felicidad;
+        return res;
+    }
+    
+    public boolean addFelicidad(float sumando){
+        return setFelicidad(felicidad + sumando);
     }
 
-    public int getExperiencia() {
+    public float getExperiencia() {
         return experiencia;
     }
 
-    public void setExperiencia(int experiencia) {
-        this.experiencia = experiencia;
+    public void setExperiencia(float experiencia) {
+        if(getFelicidad()>0){
+            this.experiencia = experiencia +getFuerza()*0.1f;
+        }
     }
 
     public int getNivel() {

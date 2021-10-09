@@ -8,6 +8,7 @@ package miumiu_app;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.GraphicsEnvironment;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
@@ -36,9 +37,9 @@ public class Datos extends javax.swing.JFrame {
         
         initComponents();
         
-        ValidationGroup group1 = validationMMName.getValidationGroup();
-        ValidationGroup group2 = validationName.getValidationGroup();
-        ValidationGroup group3 = validationAge.getValidationGroup();
+        ValidationGroup group1 = validationName.getValidationGroup();
+        ValidationGroup group2 = validationAge.getValidationGroup();
+        ValidationGroup group3 = validationMMName.getValidationGroup();
         group1.add(fieldName, StringValidators.REQUIRE_NON_EMPTY_STRING);
         group2.add(fieldAge, StringValidators.REQUIRE_NON_EMPTY_STRING, StringValidators.REQUIRE_VALID_INTEGER, StringValidators.REQUIRE_NON_NEGATIVE_NUMBER);
         group3.add(fieldMMName, StringValidators.REQUIRE_NON_EMPTY_STRING);
@@ -118,6 +119,11 @@ public class Datos extends javax.swing.JFrame {
 
         fieldName.setFont(new java.awt.Font("Verdana", 0, 24)); // NOI18N
         fieldName.setForeground(new java.awt.Color(153, 153, 153));
+        fieldName.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                fieldNameKeyPressed(evt);
+            }
+        });
 
         validationName.setBackground(new java.awt.Color(254, 236, 214));
 
@@ -127,6 +133,11 @@ public class Datos extends javax.swing.JFrame {
 
         fieldAge.setFont(new java.awt.Font("Verdana", 0, 24)); // NOI18N
         fieldAge.setForeground(new java.awt.Color(153, 153, 153));
+        fieldAge.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                fieldAgeKeyPressed(evt);
+            }
+        });
 
         validationAge.setBackground(new java.awt.Color(254, 236, 214));
 
@@ -234,6 +245,20 @@ public class Datos extends javax.swing.JFrame {
         newGame.setVisible(true);
         this.setVisible(false);
     }//GEN-LAST:event_btnNextActionPerformed
+
+    private void fieldNameKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_fieldNameKeyPressed
+        // TODO add your handling code here:
+        if(evt.getKeyCode()==KeyEvent.VK_ENTER){
+            fieldAge.requestFocus();
+        }
+    }//GEN-LAST:event_fieldNameKeyPressed
+
+    private void fieldAgeKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_fieldAgeKeyPressed
+        // TODO add your handling code here:
+        if(evt.getKeyCode()==KeyEvent.VK_ENTER){
+            fieldMMName.requestFocus();
+        }
+    }//GEN-LAST:event_fieldAgeKeyPressed
 
     /**
      * @param args the command line arguments

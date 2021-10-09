@@ -156,6 +156,9 @@
               <Color blue="99" green="99" red="99" type="rgb"/>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="fieldNameKeyPressed"/>
+          </Events>
         </Component>
         <Component class="org.netbeans.validation.api.ui.swing.ValidationPanel" name="validationName">
           <Properties>
@@ -184,6 +187,9 @@
               <Color blue="99" green="99" red="99" type="rgb"/>
             </Property>
           </Properties>
+          <Events>
+            <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="fieldAgeKeyPressed"/>
+          </Events>
         </Component>
         <Component class="org.netbeans.validation.api.ui.swing.ValidationPanel" name="validationAge">
           <Properties>
