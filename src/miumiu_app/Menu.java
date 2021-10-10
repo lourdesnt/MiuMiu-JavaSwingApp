@@ -10,7 +10,13 @@ import java.awt.FontFormatException;
 import java.awt.GraphicsEnvironment;
 import java.io.File;
 import java.io.IOException;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.ImageIcon;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -20,12 +26,29 @@ public class Menu extends javax.swing.JFrame {
     
     ImageIcon img = new ImageIcon("src/resources/icon.png");
     static Font pixelMplus;
+    AudioInputStream audioMenu;
+    static Clip clip1;
+    AudioInputStream audioClick;
+    static Clip clip2;
     
     /**
      * Creates new form MiuMiuPpal
      */
-    public Menu() {
+    public Menu() throws UnsupportedAudioFileException, IOException, LineUnavailableException {
+        clip2 = AudioSystem.getClip();
+        audioClick = AudioSystem.getAudioInputStream(new File("src/resources/sounds/click.wav"));
+        clip1 = AudioSystem.getClip();
+        audioMenu = AudioSystem.getAudioInputStream(new File("src/resources/sounds/menu.wav"));
         initComponents();
+        
+        clip1.open(audioMenu);
+        clip2.open(audioClick);
+        clip1.start();
+        clip1.loop(-1);
+    }
+
+    public Clip getClip1() {
+        return clip1;
     }
 
     /**
@@ -125,9 +148,16 @@ public class Menu extends javax.swing.JFrame {
 
     private void btnNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewActionPerformed
         // TODO add your handling code here:
+        clip2.start();
+        clip2.setFramePosition(0);
         this.setVisible(false);
-        Datos init = new Datos();
-        init.setVisible(true);
+        Datos init;
+        try {
+            init = new Datos();
+            init.setVisible(true);
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
+            Exceptions.printStackTrace(ex);
+        }
     }//GEN-LAST:event_btnNewActionPerformed
 
     /**
@@ -161,7 +191,11 @@ public class Menu extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Menu().setVisible(true);
+                try {
+                    new Menu().setVisible(true);
+                } catch (IOException | UnsupportedAudioFileException | LineUnavailableException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
             }
         });
         

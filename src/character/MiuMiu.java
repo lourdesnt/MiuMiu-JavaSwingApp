@@ -149,17 +149,16 @@ public class MiuMiu {
     }
 
     public boolean setFelicidad(float felicidad) {
-        boolean res = true;
-         if(felicidad<0){
-            this.felicidad=0;
-            
+        if(felicidad<0){
+           this.felicidad=0;
+           return false;
         }
         if(suciedad>=100 && this.felicidad<felicidad){
             return false;
         }
        
         this.felicidad = (felicidad>100) ? 100 : felicidad;
-        return res;
+        return true;
     }
     
     public boolean addFelicidad(float sumando){

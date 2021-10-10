@@ -12,12 +12,17 @@ import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.Locale;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.ImageIcon;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import static miumiu_app.Menu.clip1;
+import static miumiu_app.Menu.clip2;
 import static miumiu_app.Menu.pixelMplus;
 import org.netbeans.validation.api.builtin.stringvalidation.StringValidators;
 import org.netbeans.validation.api.ui.ValidationGroup;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -32,8 +37,8 @@ public class Datos extends javax.swing.JFrame {
      * Creates new form IniciarJuego
      */
     @SuppressWarnings("unchecked")
-    public Datos() {
-        img = new ImageIcon("src/resources/icon.png");
+    public Datos() throws UnsupportedAudioFileException, IOException, LineUnavailableException {
+        this.img = new ImageIcon("src/resources/icon.png");
         
         initComponents();
         
@@ -239,11 +244,19 @@ public class Datos extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
-        // TODO add your handling code here:
+        clip2.start();
+        clip2.setFramePosition(0);
         MiuMiuName = fieldMMName.getText();
-        Juego newGame = new Juego();
-        newGame.setVisible(true);
-        this.setVisible(false);
+        Juego newGame;
+        try {
+            newGame = new Juego();
+            newGame.setVisible(true);
+            this.setVisible(false);
+            clip1.setFramePosition(0);
+            clip1.stop();
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
+            Exceptions.printStackTrace(ex);
+        }
     }//GEN-LAST:event_btnNextActionPerformed
 
     private void fieldNameKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_fieldNameKeyPressed
@@ -263,7 +276,7 @@ public class Datos extends javax.swing.JFrame {
     /**
      * @param args the command line arguments
      */
-    public static void main(String args[]) {
+    public static void main(String args[]) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">
         /* If Nimbus (introduced in Java SE 6) is not available, stay with the default look and feel.
@@ -291,12 +304,20 @@ public class Datos extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Datos().setVisible(true);
+                try {
+                    new Datos().setVisible(true);
+                } catch (IOException | UnsupportedAudioFileException | LineUnavailableException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
             }
         });
         
         Locale.setDefault(new Locale("es", "ES"));
-        new Datos().setVisible(true);
+        try {
+            new Datos().setVisible(true);
+        } catch (IOException | UnsupportedAudioFileException | LineUnavailableException ex) {
+            Exceptions.printStackTrace(ex);
+        }
         
         try{
             pixelMplus = Font.createFont(Font.TRUETYPE_FONT, new File("src/resources/PixelMplus10-Regular.ttf")).deriveFont(30f);	

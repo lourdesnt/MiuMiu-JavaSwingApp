@@ -14,7 +14,14 @@ import java.io.IOException;
 import java.util.TimerTask;
 import javax.swing.ImageIcon;
 import java.util.Timer;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import javax.sound.sampled.LineUnavailableException;
+import javax.sound.sampled.UnsupportedAudioFileException;
+import static miumiu_app.Menu.clip1;
 import static miumiu_app.Menu.pixelMplus;
+import org.openide.util.Exceptions;
 
 /**
  *
@@ -26,12 +33,14 @@ public class Juego extends javax.swing.JFrame {
     MiuMiu m;
     Timer timer;
     TimerTask tarea;
+    AudioInputStream audioEat, audioClean, audioTrain, audioSleep, audioDirty, audioLevelUp, audioDead, audioWin;
+    Clip clipEat, clipClean, clipTrain, clipSleep, clipDirty, clipLevelUp, clipDead, clipWin;
     boolean doingAction;
 
     /**
      * Creates new form Juego
      */
-    public Juego() {
+    public Juego() throws UnsupportedAudioFileException, IOException, LineUnavailableException {
         img = new ImageIcon("src/resources/icon.png");
         standing = new ImageIcon("src/resources/standing.gif");
         eating = new ImageIcon("src/resources/eating.gif");
@@ -41,6 +50,31 @@ public class Juego extends javax.swing.JFrame {
         dirty = new ImageIcon("src/resources/dirty.gif");
         lvlup = new ImageIcon("src/resources/lvlup.gif");
         dead = new ImageIcon("src/resources/dead.gif");
+        
+        clipEat = AudioSystem.getClip();
+        audioEat = AudioSystem.getAudioInputStream(new File("src/resources/sounds/eat.wav"));
+        clipEat.open(audioEat);
+        clipClean = AudioSystem.getClip();
+        audioClean = AudioSystem.getAudioInputStream(new File("src/resources/sounds/clean.wav"));
+        clipClean.open(audioClean);
+        clipDirty = AudioSystem.getClip();
+        audioDirty = AudioSystem.getAudioInputStream(new File("src/resources/sounds/dirty.wav"));
+        clipDirty.open(audioDirty);
+        clipTrain = AudioSystem.getClip();
+        audioTrain = AudioSystem.getAudioInputStream(new File("src/resources/sounds/training.wav"));
+        clipTrain.open(audioTrain);
+        clipSleep = AudioSystem.getClip();
+        audioSleep = AudioSystem.getAudioInputStream(new File("src/resources/sounds/sleep.wav"));
+        clipSleep.open(audioSleep);
+        clipLevelUp = AudioSystem.getClip();
+        audioLevelUp = AudioSystem.getAudioInputStream(new File("src/resources/sounds/levelup.wav"));
+        clipLevelUp.open(audioLevelUp);
+        clipDead = AudioSystem.getClip();
+        audioDead = AudioSystem.getAudioInputStream(new File("src/resources/sounds/dead.wav"));
+        clipDead.open(audioDead);
+        clipWin = AudioSystem.getClip();
+        audioWin = AudioSystem.getAudioInputStream(new File("src/resources/sounds/win.wav"));
+        clipWin.open(audioWin);
         
         state = standing;
         
@@ -75,6 +109,8 @@ public class Juego extends javax.swing.JFrame {
             lbMiuLevel.setText("Nivel "+m.getNivel());
             
             MiuCh.setIcon(lvlup);
+            clipLevelUp.start();
+            clipLevelUp.setFramePosition(0);
 
             tarea = new TimerTask(){
             @Override
@@ -97,6 +133,8 @@ public class Juego extends javax.swing.JFrame {
         if(m.getEnergia()<0 && !doingAction){
             doingAction = true;
             MiuCh.setIcon(dead);
+            clipDead.start();
+            clipDead.setFramePosition(0);
             m.muerto();
             dialogGameOver.setVisible(true);
         }
@@ -105,6 +143,8 @@ public class Juego extends javax.swing.JFrame {
     private void sucio(){
         if(m.getSuciedad()==100 && !doingAction){
             state = dirty;
+            clipDirty.start();
+            clipDirty.setFramePosition(0);
             m.addFelicidad(-50);
         }
     }
@@ -476,13 +516,15 @@ public class Juego extends javax.swing.JFrame {
             if(res){
                 doingAction = true;
                 MiuCh.setIcon(eating);
+                clipEat.start();
+                clipEat.setFramePosition(0);
 
                 tarea = new TimerTask(){
                 @Override
                     public void run() {
-                        MiuCh.setIcon(state);
                         doingAction = false;
                         sucio();
+                        MiuCh.setIcon(state);
                         levelUp();
                         muerto();
                         updateProgress();
@@ -502,6 +544,8 @@ public class Juego extends javax.swing.JFrame {
             m.limpiar();
             state = standing;
             MiuCh.setIcon(cleaning);
+            clipClean.start();
+            clipClean.setFramePosition(0);
 
             tarea = new TimerTask(){
             @Override
@@ -526,14 +570,16 @@ public class Juego extends javax.swing.JFrame {
             if(res){
                 doingAction = true;
                 MiuCh.setIcon(training);
+                clipTrain.start();
+                clipTrain.setFramePosition(0);
 
                 tarea = new TimerTask(){
                     @Override
                     public void run() {
-                        MiuCh.setIcon(state);
                         doingAction = false;
                         hambriento();
                         sucio();
+                        MiuCh.setIcon(state);
                         levelUp();
                         muerto();
                         updateProgress();
@@ -552,28 +598,39 @@ public class Juego extends javax.swing.JFrame {
            doingAction = true;
            m.dormir();
            MiuCh.setIcon(sleeping);
+           clipSleep.start();
+           clipSleep.setFramePosition(0);
 
             tarea = new TimerTask(){
             @Override
                 public void run() {
-                    MiuCh.setIcon(state);
                     doingAction = false;
                     hambriento();
+                    sucio();
+                    MiuCh.setIcon(state);
                     levelUp();
                     updateProgress();
                 }
             };
         
             timer = new Timer();
-            timer.schedule(tarea, 2000);
+            timer.schedule(tarea, 1800);
         }
     }//GEN-LAST:event_btnSleepActionPerformed
 
     private void btnAgainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgainActionPerformed
         // TODO add your handling code here:
-        Datos d = new Datos();
-        this.dispose();
-        d.setVisible(true);
+        Datos d;
+        try {
+            d = new Datos();
+            this.dispose();
+            dialogGameOver.dispose();
+            d.setVisible(true);
+        } catch (IOException | UnsupportedAudioFileException | LineUnavailableException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+        clip1.start();
+        clip1.loop(-1);
     }//GEN-LAST:event_btnAgainActionPerformed
 
     /**
@@ -606,7 +663,11 @@ public class Juego extends javax.swing.JFrame {
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
             public void run() {
-                new Juego().setVisible(true);
+                try {
+                    new Juego().setVisible(true);
+                } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
+                    Exceptions.printStackTrace(ex);
+                }
             }
         });
         
