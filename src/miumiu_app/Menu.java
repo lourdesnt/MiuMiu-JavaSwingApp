@@ -5,6 +5,8 @@
  */
 package miumiu_app;
 
+import data.Acceso;
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.GraphicsEnvironment;
@@ -24,7 +26,8 @@ import org.openide.util.Exceptions;
  */
 public class Menu extends javax.swing.JFrame {
     
-    ImageIcon img = new ImageIcon("src/resources/icon.png");
+    ImageIcon img;
+    File xml;
     static Font pixelMplus;
     AudioInputStream audioMenu;
     static Clip clip1;
@@ -35,6 +38,10 @@ public class Menu extends javax.swing.JFrame {
      * Creates new form MiuMiuPpal
      */
     public Menu() throws UnsupportedAudioFileException, IOException, LineUnavailableException {
+        xml = new File("src/data/save.xml");
+        
+        img = new ImageIcon("src/resources/icon.png");
+        
         clip2 = AudioSystem.getClip();
         audioClick = AudioSystem.getAudioInputStream(new File("src/resources/sounds/click.wav"));
         clip1 = AudioSystem.getClip();
@@ -45,10 +52,16 @@ public class Menu extends javax.swing.JFrame {
         clip2.open(audioClick);
         clip1.start();
         clip1.loop(-1);
-    }
-
-    public Clip getClip1() {
-        return clip1;
+        
+        Acceso.abrirXML(xml);
+        String[] datos = Acceso.obtenerDatos();
+        if(datos[0].equals("n/a") && datos[1].equals("0") && datos[1].equals("0") && datos[2].equals("0") && datos[3].equals("0") && datos[4].equals("0") && datos[5].equals("0") && datos[6].equals("0") && datos[7].equals("0")){
+            float[] gris = new float[3];
+            Color.RGBtoHSB(204, 204, 204, gris);
+            btnCont.setBackground(Color.getHSBColor(gris[0], gris[1], gris[2]));
+            btnCont.setEnabled(false);
+        }
+        
     }
 
     /**
@@ -99,6 +112,11 @@ public class Menu extends javax.swing.JFrame {
         btnCont.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(155, 184, 237), 1, true));
         btnCont.setContentAreaFilled(false);
         btnCont.setOpaque(true);
+        btnCont.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnContActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout panelPpalLayout = new javax.swing.GroupLayout(panelPpal);
         panelPpal.setLayout(panelPpalLayout);
@@ -159,6 +177,21 @@ public class Menu extends javax.swing.JFrame {
             Exceptions.printStackTrace(ex);
         }
     }//GEN-LAST:event_btnNewActionPerformed
+
+    private void btnContActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContActionPerformed
+        // TODO add your handling code here:
+        this.setVisible(false);
+        //Acceso.abrirXML(xml);
+        Juego game;
+        try {
+            game = new Juego();
+            game.setVisible(true);
+            clip1.setFramePosition(0);
+            clip1.stop();
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+    }//GEN-LAST:event_btnContActionPerformed
 
     /**
      * @param args the command line arguments

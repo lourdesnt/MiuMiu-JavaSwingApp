@@ -5,6 +5,7 @@
  */
 package miumiu_app;
 
+import data.Acceso;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.GraphicsEnvironment;
@@ -30,6 +31,7 @@ import org.openide.util.Exceptions;
  */
 public class Datos extends javax.swing.JFrame {
     
+    File xml;
     ImageIcon img;
     static String MiuMiuName;
 
@@ -38,7 +40,9 @@ public class Datos extends javax.swing.JFrame {
      */
     @SuppressWarnings("unchecked")
     public Datos() throws UnsupportedAudioFileException, IOException, LineUnavailableException {
-        this.img = new ImageIcon("src/resources/icon.png");
+        xml = new File("src/data/save.xml");
+        
+        img = new ImageIcon("src/resources/icon.png");
         
         initComponents();
         
@@ -105,6 +109,7 @@ public class Datos extends javax.swing.JFrame {
         validationMMName = new org.netbeans.validation.api.ui.swing.ValidationPanel();
         fieldMMName = new javax.swing.JTextField();
         btnNext = new javax.swing.JButton();
+        btnBack = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("MiuMiu");
@@ -168,6 +173,17 @@ public class Datos extends javax.swing.JFrame {
             }
         });
 
+        btnBack.setBackground(new java.awt.Color(255, 255, 255));
+        btnBack.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/back.png"))); // NOI18N
+        btnBack.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(153, 204, 255), 1, true));
+        btnBack.setContentAreaFilled(false);
+        btnBack.setOpaque(true);
+        btnBack.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnBackActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout panelISLayout = new javax.swing.GroupLayout(panelIS);
         panelIS.setLayout(panelISLayout);
         panelISLayout.setHorizontalGroup(
@@ -192,14 +208,16 @@ public class Datos extends javax.swing.JFrame {
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelISLayout.createSequentialGroup()
                         .addGroup(panelISLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(lbLogIn1, javax.swing.GroupLayout.PREFERRED_SIZE, 362, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(panelISLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                .addComponent(fieldMMName, javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(validationMMName, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE)))
+                            .addGroup(panelISLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addGroup(panelISLayout.createSequentialGroup()
+                                    .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(70, 70, 70)
+                                    .addComponent(btnNext, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(16, 16, 16))
+                                .addGroup(panelISLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                                    .addComponent(fieldMMName, javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(validationMMName, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE))))
                         .addGap(155, 155, 155))))
-            .addGroup(panelISLayout.createSequentialGroup()
-                .addGap(278, 278, 278)
-                .addComponent(btnNext, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(0, 0, Short.MAX_VALUE))
         );
         panelISLayout.setVerticalGroup(
             panelISLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -224,9 +242,11 @@ public class Datos extends javax.swing.JFrame {
                 .addComponent(fieldMMName, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(validationMMName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(9, 9, 9)
-                .addComponent(btnNext, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(100, Short.MAX_VALUE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGroup(panelISLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(btnNext, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(98, Short.MAX_VALUE))
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -246,7 +266,9 @@ public class Datos extends javax.swing.JFrame {
     private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
         clip2.start();
         clip2.setFramePosition(0);
-        MiuMiuName = fieldMMName.getText();
+        Acceso.abrirXML(xml);
+        Acceso.guardarDatos(fieldMMName.getText(), 10, 10, 0, 90, 10, 0, 1);
+        Acceso.sobreescribir();
         Juego newGame;
         try {
             newGame = new Juego();
@@ -272,6 +294,19 @@ public class Datos extends javax.swing.JFrame {
             fieldMMName.requestFocus();
         }
     }//GEN-LAST:event_fieldAgeKeyPressed
+
+    private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
+        // TODO add your handling code here:
+        this.dispose();
+        Menu m;
+        try {
+            m = new Menu();
+            m.setVisible(true);
+            clip1.stop();
+        } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+    }//GEN-LAST:event_btnBackActionPerformed
 
     /**
      * @param args the command line arguments
@@ -330,6 +365,7 @@ public class Datos extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnBack;
     private javax.swing.JButton btnNext;
     private javax.swing.JTextField fieldAge;
     private javax.swing.JTextField fieldMMName;

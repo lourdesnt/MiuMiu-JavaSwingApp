@@ -6,6 +6,8 @@
 package miumiu_app;
 
 import character.MiuMiu;
+import data.Acceso;
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.GraphicsEnvironment;
@@ -20,6 +22,7 @@ import javax.sound.sampled.Clip;
 import javax.sound.sampled.LineUnavailableException;
 import javax.sound.sampled.UnsupportedAudioFileException;
 import static miumiu_app.Menu.clip1;
+import static miumiu_app.Menu.clip2;
 import static miumiu_app.Menu.pixelMplus;
 import org.openide.util.Exceptions;
 
@@ -29,6 +32,7 @@ import org.openide.util.Exceptions;
  */
 public class Juego extends javax.swing.JFrame {
     
+    File xml;
     ImageIcon img, standing, eating, sleeping, training, cleaning, dirty, lvlup, dead, state;
     MiuMiu m;
     Timer timer;
@@ -41,6 +45,8 @@ public class Juego extends javax.swing.JFrame {
      * Creates new form Juego
      */
     public Juego() throws UnsupportedAudioFileException, IOException, LineUnavailableException {
+        xml = new File("src/data/save.xml");
+        
         img = new ImageIcon("src/resources/icon.png");
         standing = new ImageIcon("src/resources/standing.gif");
         eating = new ImageIcon("src/resources/eating.gif");
@@ -72,13 +78,12 @@ public class Juego extends javax.swing.JFrame {
         clipDead = AudioSystem.getClip();
         audioDead = AudioSystem.getAudioInputStream(new File("src/resources/sounds/dead.wav"));
         clipDead.open(audioDead);
-        clipWin = AudioSystem.getClip();
-        audioWin = AudioSystem.getAudioInputStream(new File("src/resources/sounds/win.wav"));
-        clipWin.open(audioWin);
         
         state = standing;
         
-        m = new MiuMiu(Datos.MiuMiuName);
+        Acceso.abrirXML(xml);
+        String[] datos = Acceso.obtenerDatos();
+        m = new MiuMiu(datos[0], Float.parseFloat(datos[1]), Float.parseFloat(datos[2]), Float.parseFloat(datos[3]), Float.parseFloat(datos[4]), Float.parseFloat(datos[5]),Float.parseFloat(datos[6]),Integer.parseInt(datos[7]));
         
         doingAction = false;
         
@@ -86,6 +91,10 @@ public class Juego extends javax.swing.JFrame {
         
         lbMiuName.setText(m.getName());
         lbMiuLevel.setText("Nivel "+m.getNivel());
+        
+        btnRenacer.setVisible(false);
+        lbEnd.setVisible(false);
+        lbEnd1.setVisible(false);
        
         updateProgress();
     }
@@ -95,6 +104,13 @@ public class Juego extends javax.swing.JFrame {
        progrSuciedad.setValue((int)m.getSuciedad());
        progrFuerza.setValue((int)m.getFuerza());
        progrEnergia.setValue((int)m.getEnergia());
+       if(m.getEnergia()<20){
+           lbEnergia.setForeground(Color.red);
+       } else {
+           float[] gris = new float[3];
+           Color.RGBtoHSB(153, 153, 153, gris);
+           lbEnergia.setForeground(Color.getHSBColor(gris[0], gris[1], gris[2]));
+       }
        progrFelicidad.setValue((int)m.getFelicidad());
        progrExp.setValue((int)m.getExperiencia());
     }
@@ -123,9 +139,6 @@ public class Juego extends javax.swing.JFrame {
             timer = new Timer();
             timer.schedule(tarea, 1000);
             
-            if(m.getNivel()==10){
-                dialogWin.setVisible(true);
-            }
         }
     }
     
@@ -133,10 +146,17 @@ public class Juego extends javax.swing.JFrame {
         if(m.getEnergia()<0 && !doingAction){
             doingAction = true;
             MiuCh.setIcon(dead);
+            btnPause.setVisible(true);
+            lbEnd.setVisible(true);
+            lbEnd1.setVisible(true);
+            m.muerto();
+            btnEat.setEnabled(false);
+            btnBath.setEnabled(false);
+            btnTrain.setEnabled(false);
+            btnSleep.setEnabled(false);
+            btnPause.setEnabled(false);
             clipDead.start();
             clipDead.setFramePosition(0);
-            m.muerto();
-            dialogGameOver.setVisible(true);
         }
     }
     
@@ -164,18 +184,10 @@ public class Juego extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        dialogWin = new javax.swing.JDialog();
-        panelPpal = new javax.swing.JPanel();
-        lbWin = new javax.swing.JLabel();
-        lbWin2 = new javax.swing.JLabel();
-        lbWin3 = new javax.swing.JLabel();
-        lbMiuWin = new javax.swing.JLabel();
-        dialogGameOver = new javax.swing.JDialog();
-        panelPpal2 = new javax.swing.JPanel();
-        lbGOver = new javax.swing.JLabel();
-        lbGOver2 = new javax.swing.JLabel();
-        lbGOver3 = new javax.swing.JLabel();
-        btnAgain = new javax.swing.JButton();
+        dialogPause = new javax.swing.JDialog();
+        panelPause = new javax.swing.JPanel();
+        btnCont = new javax.swing.JButton();
+        btnExit = new javax.swing.JButton();
         panelGame = new javax.swing.JPanel();
         lbMiuLevel = new javax.swing.JLabel();
         MiuCh = new javax.swing.JLabel();
@@ -196,122 +208,57 @@ public class Juego extends javax.swing.JFrame {
         progrFelicidad = new javax.swing.JProgressBar();
         progrExp = new javax.swing.JProgressBar();
         lbMiuName = new javax.swing.JLabel();
+        lbEnd = new javax.swing.JLabel();
+        lbEnd1 = new javax.swing.JLabel();
+        btnRenacer = new javax.swing.JButton();
+        btnPause = new javax.swing.JButton();
 
-        dialogWin.setTitle("MiuMiu");
-        dialogWin.setIconImage(img.getImage());
-        dialogWin.setPreferredSize(new java.awt.Dimension(500, 400));
-        dialogWin.setSize(new java.awt.Dimension(500, 400));
+        dialogPause.setTitle("MiuMiu");
+        dialogPause.setIconImage(img.getImage());
+        dialogPause.setPreferredSize(new java.awt.Dimension(500, 400));
+        dialogPause.setResizable(false);
+        dialogPause.setSize(new java.awt.Dimension(500, 400));
 
-        panelPpal.setBackground(new java.awt.Color(254, 236, 214));
+        panelPause.setBackground(new java.awt.Color(254, 236, 214));
+        panelPause.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
-        lbWin.setFont(new java.awt.Font("Verdana", 0, 18)); // NOI18N
-        lbWin.setForeground(new java.awt.Color(89, 173, 208));
-        lbWin.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbWin.setText("¡ENHORABUENA!");
-
-        lbWin2.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
-        lbWin2.setForeground(new java.awt.Color(255, 102, 255));
-        lbWin2.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lbWin2.setText("¡Tu MiuMiu ha crecido mucho!");
-
-        lbWin3.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
-        lbWin3.setForeground(new java.awt.Color(105, 171, 99));
-        lbWin3.setText("Ahora es muy sano, fuerte y feliz gracias a ti :)");
-
-        lbMiuWin.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/victory.gif"))); // NOI18N
-
-        javax.swing.GroupLayout panelPpalLayout = new javax.swing.GroupLayout(panelPpal);
-        panelPpal.setLayout(panelPpalLayout);
-        panelPpalLayout.setHorizontalGroup(
-            panelPpalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelPpalLayout.createSequentialGroup()
-                .addGroup(panelPpalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelPpalLayout.createSequentialGroup()
-                        .addGap(92, 92, 92)
-                        .addComponent(lbMiuWin))
-                    .addGroup(panelPpalLayout.createSequentialGroup()
-                        .addGap(121, 121, 121)
-                        .addComponent(lbWin2))
-                    .addGroup(panelPpalLayout.createSequentialGroup()
-                        .addGap(148, 148, 148)
-                        .addComponent(lbWin))
-                    .addGroup(panelPpalLayout.createSequentialGroup()
-                        .addGap(83, 83, 83)
-                        .addComponent(lbWin3)))
-                .addContainerGap(223, Short.MAX_VALUE))
-        );
-        panelPpalLayout.setVerticalGroup(
-            panelPpalLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(panelPpalLayout.createSequentialGroup()
-                .addContainerGap(46, Short.MAX_VALUE)
-                .addComponent(lbWin)
-                .addGap(18, 18, 18)
-                .addComponent(lbWin2)
-                .addGap(18, 18, 18)
-                .addComponent(lbWin3)
-                .addGap(39, 39, 39)
-                .addComponent(lbMiuWin)
-                .addGap(22, 22, 22))
-        );
-
-        javax.swing.GroupLayout dialogWinLayout = new javax.swing.GroupLayout(dialogWin.getContentPane());
-        dialogWin.getContentPane().setLayout(dialogWinLayout);
-        dialogWinLayout.setHorizontalGroup(
-            dialogWinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panelPpal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-        dialogWinLayout.setVerticalGroup(
-            dialogWinLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panelPpal, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-        );
-
-        dialogGameOver.setTitle("MiuMiu");
-        dialogGameOver.setIconImage(img.getImage());
-        dialogGameOver.setPreferredSize(new java.awt.Dimension(600, 337));
-        dialogGameOver.setResizable(false);
-        dialogGameOver.setSize(new java.awt.Dimension(600, 337));
-
-        panelPpal2.setBackground(new java.awt.Color(254, 236, 214));
-        panelPpal2.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
-
-        lbGOver.setFont(new java.awt.Font("Verdana", 0, 18)); // NOI18N
-        lbGOver.setForeground(new java.awt.Color(153, 153, 153));
-        lbGOver.setText("¡Oh no!");
-        panelPpal2.add(lbGOver, new org.netbeans.lib.awtextra.AbsoluteConstraints(230, 50, -1, -1));
-
-        lbGOver2.setFont(new java.awt.Font("Verdana", 0, 14)); // NOI18N
-        lbGOver2.setForeground(new java.awt.Color(112, 149, 225));
-        lbGOver2.setText("No has cuidado bien a tu MiuMiu y se ha quedado sin energía :(");
-        panelPpal2.add(lbGOver2, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 90, -1, -1));
-
-        lbGOver3.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
-        lbGOver3.setForeground(new java.awt.Color(153, 153, 255));
-        lbGOver3.setText("¿Quieres volver a intentarlo?");
-        panelPpal2.add(lbGOver3, new org.netbeans.lib.awtextra.AbsoluteConstraints(180, 140, -1, -1));
-
-        btnAgain.setBackground(new java.awt.Color(255, 255, 255));
-        btnAgain.setFont(pixelMplus);
-        btnAgain.setForeground(new java.awt.Color(105, 171, 99));
-        btnAgain.setText("Volver a intentar");
-        btnAgain.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(105, 171, 99), 1, true));
-        btnAgain.setContentAreaFilled(false);
-        btnAgain.setOpaque(true);
-        btnAgain.addActionListener(new java.awt.event.ActionListener() {
+        btnCont.setBackground(new java.awt.Color(255, 255, 255));
+        btnCont.setFont(pixelMplus);
+        btnCont.setForeground(new java.awt.Color(105, 171, 99));
+        btnCont.setText("Continuar");
+        btnCont.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(105, 171, 99), 1, true));
+        btnCont.setContentAreaFilled(false);
+        btnCont.setOpaque(true);
+        btnCont.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnAgainActionPerformed(evt);
+                btnContActionPerformed(evt);
             }
         });
-        panelPpal2.add(btnAgain, new org.netbeans.lib.awtextra.AbsoluteConstraints(140, 220, 260, 48));
+        panelPause.add(btnCont, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 90, 390, 48));
 
-        javax.swing.GroupLayout dialogGameOverLayout = new javax.swing.GroupLayout(dialogGameOver.getContentPane());
-        dialogGameOver.getContentPane().setLayout(dialogGameOverLayout);
-        dialogGameOverLayout.setHorizontalGroup(
-            dialogGameOverLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panelPpal2, javax.swing.GroupLayout.DEFAULT_SIZE, 600, Short.MAX_VALUE)
+        btnExit.setBackground(new java.awt.Color(255, 255, 255));
+        btnExit.setFont(pixelMplus);
+        btnExit.setForeground(new java.awt.Color(155, 184, 237));
+        btnExit.setText("Guardar y salir");
+        btnExit.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(155, 184, 237), 1, true));
+        btnExit.setContentAreaFilled(false);
+        btnExit.setOpaque(true);
+        btnExit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnExitActionPerformed(evt);
+            }
+        });
+        panelPause.add(btnExit, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 230, 390, 48));
+
+        javax.swing.GroupLayout dialogPauseLayout = new javax.swing.GroupLayout(dialogPause.getContentPane());
+        dialogPause.getContentPane().setLayout(dialogPauseLayout);
+        dialogPauseLayout.setHorizontalGroup(
+            dialogPauseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(panelPause, javax.swing.GroupLayout.DEFAULT_SIZE, 502, Short.MAX_VALUE)
         );
-        dialogGameOverLayout.setVerticalGroup(
-            dialogGameOverLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(panelPpal2, javax.swing.GroupLayout.DEFAULT_SIZE, 337, Short.MAX_VALUE)
+        dialogPauseLayout.setVerticalGroup(
+            dialogPauseLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(panelPause, javax.swing.GroupLayout.DEFAULT_SIZE, 401, Short.MAX_VALUE)
         );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
@@ -321,13 +268,19 @@ public class Juego extends javax.swing.JFrame {
         setSize(new java.awt.Dimension(700, 600));
 
         panelGame.setBackground(new java.awt.Color(254, 236, 214));
+        panelGame.setMinimumSize(new java.awt.Dimension(700, 600));
+        panelGame.setName(""); // NOI18N
+        panelGame.setPreferredSize(new java.awt.Dimension(700, 600));
+        panelGame.setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         lbMiuLevel.setFont(pixelMplus);
         lbMiuLevel.setForeground(new java.awt.Color(155, 184, 237));
         lbMiuLevel.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        panelGame.add(lbMiuLevel, new org.netbeans.lib.awtextra.AbsoluteConstraints(205, 146, 256, 30));
 
         MiuCh.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         MiuCh.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/standing.gif"))); // NOI18N
+        panelGame.add(MiuCh, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 194, 312, -1));
 
         btnEat.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/food.png"))); // NOI18N
         btnEat.setBorderPainted(false);
@@ -337,6 +290,7 @@ public class Juego extends javax.swing.JFrame {
                 btnEatActionPerformed(evt);
             }
         });
+        panelGame.add(btnEat, new org.netbeans.lib.awtextra.AbsoluteConstraints(20, 460, -1, -1));
 
         btnBath.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/bath.png"))); // NOI18N
         btnBath.setBorderPainted(false);
@@ -346,6 +300,7 @@ public class Juego extends javax.swing.JFrame {
                 btnBathActionPerformed(evt);
             }
         });
+        panelGame.add(btnBath, new org.netbeans.lib.awtextra.AbsoluteConstraints(189, 460, -1, -1));
 
         btnTrain.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/sword.png"))); // NOI18N
         btnTrain.setBorderPainted(false);
@@ -355,6 +310,7 @@ public class Juego extends javax.swing.JFrame {
                 btnTrainActionPerformed(evt);
             }
         });
+        panelGame.add(btnTrain, new org.netbeans.lib.awtextra.AbsoluteConstraints(348, 480, -1, -1));
 
         btnSleep.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/bed.png"))); // NOI18N
         btnSleep.setBorderPainted(false);
@@ -364,136 +320,94 @@ public class Juego extends javax.swing.JFrame {
                 btnSleepActionPerformed(evt);
             }
         });
+        panelGame.add(btnSleep, new org.netbeans.lib.awtextra.AbsoluteConstraints(505, 470, -1, -1));
 
         lbHambre.setFont(new java.awt.Font("Verdana", 0, 11)); // NOI18N
         lbHambre.setForeground(new java.awt.Color(153, 153, 153));
         lbHambre.setText("Hambre");
+        panelGame.add(lbHambre, new org.netbeans.lib.awtextra.AbsoluteConstraints(44, 23, -1, -1));
 
         lbSuciedad.setFont(new java.awt.Font("Verdana", 0, 11)); // NOI18N
         lbSuciedad.setForeground(new java.awt.Color(153, 153, 153));
         lbSuciedad.setText("Suciedad");
+        panelGame.add(lbSuciedad, new org.netbeans.lib.awtextra.AbsoluteConstraints(37, 56, -1, -1));
 
         lbFuerza.setFont(new java.awt.Font("Verdana", 0, 11)); // NOI18N
         lbFuerza.setForeground(new java.awt.Color(153, 153, 153));
         lbFuerza.setText("Fuerza");
+        panelGame.add(lbFuerza, new org.netbeans.lib.awtextra.AbsoluteConstraints(51, 89, -1, -1));
 
         lbEnergia.setFont(new java.awt.Font("Verdana", 0, 11)); // NOI18N
         lbEnergia.setForeground(new java.awt.Color(153, 153, 153));
         lbEnergia.setText("Energia");
+        panelGame.add(lbEnergia, new org.netbeans.lib.awtextra.AbsoluteConstraints(366, 23, -1, -1));
 
         lbFelicidad.setFont(new java.awt.Font("Verdana", 0, 11)); // NOI18N
         lbFelicidad.setForeground(new java.awt.Color(153, 153, 153));
         lbFelicidad.setText("Felicidad");
+        panelGame.add(lbFelicidad, new org.netbeans.lib.awtextra.AbsoluteConstraints(360, 56, -1, -1));
 
         lbExp.setFont(new java.awt.Font("Verdana", 0, 11)); // NOI18N
         lbExp.setForeground(new java.awt.Color(153, 153, 153));
         lbExp.setText("EXP");
+        panelGame.add(lbExp, new org.netbeans.lib.awtextra.AbsoluteConstraints(387, 89, -1, -1));
 
         progrHambre.setForeground(new java.awt.Color(105, 171, 99));
+        panelGame.add(progrHambre, new org.netbeans.lib.awtextra.AbsoluteConstraints(142, 23, 100, -1));
 
         progrSuciedad.setForeground(new java.awt.Color(105, 171, 99));
+        panelGame.add(progrSuciedad, new org.netbeans.lib.awtextra.AbsoluteConstraints(142, 56, 100, -1));
 
         progrFuerza.setForeground(new java.awt.Color(105, 171, 99));
+        panelGame.add(progrFuerza, new org.netbeans.lib.awtextra.AbsoluteConstraints(142, 89, 100, -1));
 
         progrEnergia.setForeground(new java.awt.Color(105, 171, 99));
+        panelGame.add(progrEnergia, new org.netbeans.lib.awtextra.AbsoluteConstraints(462, 23, 100, -1));
 
         progrFelicidad.setForeground(new java.awt.Color(105, 171, 99));
+        panelGame.add(progrFelicidad, new org.netbeans.lib.awtextra.AbsoluteConstraints(462, 56, 100, -1));
 
         progrExp.setForeground(new java.awt.Color(105, 171, 99));
+        panelGame.add(progrExp, new org.netbeans.lib.awtextra.AbsoluteConstraints(462, 89, 100, -1));
 
         lbMiuName.setFont(pixelMplus);
         lbMiuName.setForeground(new java.awt.Color(51, 51, 51));
         lbMiuName.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        panelGame.add(lbMiuName, new org.netbeans.lib.awtextra.AbsoluteConstraints(215, 405, 246, 37));
 
-        javax.swing.GroupLayout panelGameLayout = new javax.swing.GroupLayout(panelGame);
-        panelGame.setLayout(panelGameLayout);
-        panelGameLayout.setHorizontalGroup(
-            panelGameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelGameLayout.createSequentialGroup()
-                .addGap(37, 37, 37)
-                .addGroup(panelGameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(lbSuciedad)
-                    .addComponent(lbHambre, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(lbFuerza, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addGap(53, 53, 53)
-                .addGroup(panelGameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(progrHambre, javax.swing.GroupLayout.DEFAULT_SIZE, 100, Short.MAX_VALUE)
-                    .addComponent(progrSuciedad, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE)
-                    .addComponent(progrFuerza, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addGroup(panelGameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(lbExp)
-                    .addComponent(lbFelicidad)
-                    .addComponent(lbEnergia))
-                .addGap(53, 53, 53)
-                .addGroup(panelGameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelGameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                        .addComponent(progrFelicidad, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addComponent(progrEnergia, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(progrExp, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(91, 91, 91))
-            .addGroup(panelGameLayout.createSequentialGroup()
-                .addGap(20, 20, 20)
-                .addComponent(btnEat)
-                .addGroup(panelGameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(panelGameLayout.createSequentialGroup()
-                        .addGap(36, 36, 36)
-                        .addGroup(panelGameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addGroup(panelGameLayout.createSequentialGroup()
-                                .addComponent(btnBath)
-                                .addGap(20, 20, 20)
-                                .addComponent(btnTrain))
-                            .addComponent(lbMiuLevel, javax.swing.GroupLayout.PREFERRED_SIZE, 256, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelGameLayout.createSequentialGroup()
-                        .addGap(60, 60, 60)
-                        .addComponent(lbMiuName, javax.swing.GroupLayout.PREFERRED_SIZE, 246, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(36, 36, 36)
-                .addComponent(btnSleep)
-                .addContainerGap(33, Short.MAX_VALUE))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelGameLayout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(MiuCh, javax.swing.GroupLayout.PREFERRED_SIZE, 312, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(166, 166, 166))
-        );
-        panelGameLayout.setVerticalGroup(
-            panelGameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelGameLayout.createSequentialGroup()
-                .addGap(23, 23, 23)
-                .addGroup(panelGameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(progrHambre, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbHambre)
-                    .addComponent(lbEnergia)
-                    .addComponent(progrEnergia, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(panelGameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(progrSuciedad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(lbSuciedad)
-                    .addComponent(lbFelicidad)
-                    .addComponent(progrFelicidad, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(18, 18, 18)
-                .addGroup(panelGameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(progrExp, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGroup(panelGameLayout.createSequentialGroup()
-                        .addGroup(panelGameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(progrFuerza, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(lbFuerza)
-                            .addComponent(lbExp))
-                        .addGap(42, 42, 42)
-                        .addComponent(lbMiuLevel, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(18, 18, 18)
-                .addComponent(MiuCh)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
-                .addGroup(panelGameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(btnSleep, javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelGameLayout.createSequentialGroup()
-                        .addComponent(lbMiuName, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(18, 18, 18)
-                        .addGroup(panelGameLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnBath, javax.swing.GroupLayout.Alignment.TRAILING)
-                            .addComponent(btnTrain, javax.swing.GroupLayout.Alignment.TRAILING)))
-                    .addComponent(btnEat, javax.swing.GroupLayout.Alignment.TRAILING))
-                .addGap(31, 31, 31))
-        );
+        lbEnd.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
+        lbEnd.setForeground(new java.awt.Color(153, 153, 153));
+        lbEnd.setText("¡Oh no!");
+        panelGame.add(lbEnd, new org.netbeans.lib.awtextra.AbsoluteConstraints(530, 290, -1, -1));
+
+        lbEnd1.setFont(new java.awt.Font("Verdana", 0, 12)); // NOI18N
+        lbEnd1.setForeground(new java.awt.Color(153, 153, 153));
+        lbEnd1.setText("Se ha agotado su energía :(");
+        panelGame.add(lbEnd1, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 310, -1, -1));
+
+        btnRenacer.setBackground(new java.awt.Color(255, 255, 255));
+        btnRenacer.setFont(pixelMplus);
+        btnRenacer.setForeground(new java.awt.Color(105, 171, 99));
+        btnRenacer.setText("Renacer");
+        btnRenacer.setBorder(new javax.swing.border.LineBorder(new java.awt.Color(105, 171, 99), 1, true));
+        btnRenacer.setContentAreaFilled(false);
+        btnRenacer.setOpaque(true);
+        btnRenacer.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnRenacerActionPerformed(evt);
+            }
+        });
+        panelGame.add(btnRenacer, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 280, 140, 50));
+
+        btnPause.setIcon(new javax.swing.ImageIcon(getClass().getResource("/resources/pause.png"))); // NOI18N
+        btnPause.setBorderPainted(false);
+        btnPause.setContentAreaFilled(false);
+        btnPause.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnPauseActionPerformed(evt);
+            }
+        });
+        panelGame.add(btnPause, new org.netbeans.lib.awtextra.AbsoluteConstraints(600, 30, 70, 70));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -618,20 +532,52 @@ public class Juego extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnSleepActionPerformed
 
-    private void btnAgainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgainActionPerformed
+    private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
         // TODO add your handling code here:
+        clip2.start();
+        clip2.setFramePosition(0);
+        Acceso.abrirXML(xml);
+        Acceso.guardarDatos(m.getName(), m.getHambre(), m.getSuciedad(), m.getFuerza(), m.getEnergia(), m.getFelicidad(), m.getFelicidad(), m.getNivel());
+        Acceso.sobreescribir();
+        Menu m;
+        try {
+            m = new Menu();
+            dialogPause.setVisible(false);
+            this.dispose();
+            m.setVisible(true);
+        } catch (IOException | UnsupportedAudioFileException | LineUnavailableException ex) {
+            Exceptions.printStackTrace(ex);
+        }
+    }//GEN-LAST:event_btnExitActionPerformed
+
+    private void btnRenacerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRenacerActionPerformed
+        // TODO add your handling code here:
+        clip2.start();
+        clip2.setFramePosition(0);
         Datos d;
         try {
             d = new Datos();
             this.dispose();
-            dialogGameOver.dispose();
             d.setVisible(true);
         } catch (IOException | UnsupportedAudioFileException | LineUnavailableException ex) {
             Exceptions.printStackTrace(ex);
         }
         clip1.start();
         clip1.loop(-1);
-    }//GEN-LAST:event_btnAgainActionPerformed
+    }//GEN-LAST:event_btnRenacerActionPerformed
+
+    private void btnPauseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPauseActionPerformed
+        // TODO add your handling code here:
+        clip2.start();
+        clip2.setFramePosition(0);
+        dialogPause.setVisible(true);
+        dialogPause.isModal();
+    }//GEN-LAST:event_btnPauseActionPerformed
+
+    private void btnContActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContActionPerformed
+        // TODO add your handling code here:
+        dialogPause.setVisible(false);
+    }//GEN-LAST:event_btnContActionPerformed
 
     /**
      * @param args the command line arguments
@@ -682,31 +628,27 @@ public class Juego extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel MiuCh;
-    private javax.swing.JButton btnAgain;
     private javax.swing.JButton btnBath;
+    private javax.swing.JButton btnCont;
     private javax.swing.JButton btnEat;
+    private javax.swing.JButton btnExit;
+    private javax.swing.JButton btnPause;
+    private javax.swing.JButton btnRenacer;
     private javax.swing.JButton btnSleep;
     private javax.swing.JButton btnTrain;
-    private javax.swing.JDialog dialogGameOver;
-    private javax.swing.JDialog dialogWin;
+    private javax.swing.JDialog dialogPause;
+    private javax.swing.JLabel lbEnd;
+    private javax.swing.JLabel lbEnd1;
     private javax.swing.JLabel lbEnergia;
     private javax.swing.JLabel lbExp;
     private javax.swing.JLabel lbFelicidad;
     private javax.swing.JLabel lbFuerza;
-    private javax.swing.JLabel lbGOver;
-    private javax.swing.JLabel lbGOver2;
-    private javax.swing.JLabel lbGOver3;
     private javax.swing.JLabel lbHambre;
     private javax.swing.JLabel lbMiuLevel;
     private javax.swing.JLabel lbMiuName;
-    private javax.swing.JLabel lbMiuWin;
     private javax.swing.JLabel lbSuciedad;
-    private javax.swing.JLabel lbWin;
-    private javax.swing.JLabel lbWin2;
-    private javax.swing.JLabel lbWin3;
     private javax.swing.JPanel panelGame;
-    private javax.swing.JPanel panelPpal;
-    private javax.swing.JPanel panelPpal2;
+    private javax.swing.JPanel panelPause;
     private javax.swing.JProgressBar progrEnergia;
     private javax.swing.JProgressBar progrExp;
     private javax.swing.JProgressBar progrFelicidad;

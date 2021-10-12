@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<datos>
+    <miumiu>
+        <nombre>n/a</nombre>
+        <hambre>0</hambre>
+        <suciedad>0</suciedad>
+        <fuerza>0</fuerza>
+        <energia>0</energia>
+        <felicidad>0</felicidad>
+        <exp>0</exp>
+        <nivel>0</nivel>
+    </miumiu>
+</datos>

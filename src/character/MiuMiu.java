@@ -17,13 +17,24 @@ public class MiuMiu {
     
     public MiuMiu(String name){
         this.name=name;
-        this.energia=90;
         this.hambre=10;
-        this.fuerza=0;
         this.suciedad=10;
+        this.fuerza=0;
+        this.energia=90;
         this.felicidad=10;
         this.experiencia=0;
         this.nivel=1;
+    }
+
+    public MiuMiu(String name, float hambre, float suciedad, float fuerza, float energia, float felicidad, float experiencia, int nivel) {
+        this.name = name;
+        this.hambre = hambre;
+        this.suciedad = suciedad;
+        this.fuerza = fuerza;
+        this.energia = energia;
+        this.felicidad = felicidad;
+        this.experiencia = experiencia;
+        this.nivel = nivel;
     }
     
     public boolean comer(){
