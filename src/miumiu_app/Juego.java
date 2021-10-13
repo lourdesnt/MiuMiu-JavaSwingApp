@@ -89,6 +89,9 @@ public class Juego extends javax.swing.JFrame {
         
         initComponents();
         
+        clip1.setFramePosition(0);
+        clip1.stop();
+        
         lbMiuName.setText(m.getName());
         lbMiuLevel.setText("Nivel "+m.getNivel());
         
@@ -146,7 +149,7 @@ public class Juego extends javax.swing.JFrame {
         if(m.getEnergia()<0 && !doingAction){
             doingAction = true;
             MiuCh.setIcon(dead);
-            btnPause.setVisible(true);
+            btnRenacer.setVisible(true);
             lbEnd.setVisible(true);
             lbEnd1.setVisible(true);
             m.muerto();
@@ -536,8 +539,7 @@ public class Juego extends javax.swing.JFrame {
         // TODO add your handling code here:
         clip2.start();
         clip2.setFramePosition(0);
-        Acceso.abrirXML(xml);
-        Acceso.guardarDatos(m.getName(), m.getHambre(), m.getSuciedad(), m.getFuerza(), m.getEnergia(), m.getFelicidad(), m.getFelicidad(), m.getNivel());
+        Acceso.guardarDatos(m.getName(), m.getHambre(), m.getSuciedad(), m.getFuerza(), m.getEnergia(), m.getFelicidad(), m.getExperiencia(), m.getNivel());
         Acceso.sobreescribir();
         Menu m;
         try {
@@ -557,6 +559,8 @@ public class Juego extends javax.swing.JFrame {
         Datos d;
         try {
             d = new Datos();
+            Acceso.guardarDatos("none", 0, 0, 0, 0, 0, 0, 0);
+            Acceso.sobreescribir();
             this.dispose();
             d.setVisible(true);
         } catch (IOException | UnsupportedAudioFileException | LineUnavailableException ex) {
@@ -576,6 +580,9 @@ public class Juego extends javax.swing.JFrame {
 
     private void btnContActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContActionPerformed
         // TODO add your handling code here:
+        clip2.start();
+        clip2.setFramePosition(0);
+        clip2.stop();
         dialogPause.setVisible(false);
     }//GEN-LAST:event_btnContActionPerformed
 

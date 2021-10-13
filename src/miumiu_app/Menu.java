@@ -55,7 +55,7 @@ public class Menu extends javax.swing.JFrame {
         
         Acceso.abrirXML(xml);
         String[] datos = Acceso.obtenerDatos();
-        if(datos[0].equals("n/a") && datos[1].equals("0") && datos[1].equals("0") && datos[2].equals("0") && datos[3].equals("0") && datos[4].equals("0") && datos[5].equals("0") && datos[6].equals("0") && datos[7].equals("0")){
+        if(datos[1].equals("0.0") && datos[1].equals("0.0") && datos[2].equals("0.0") && datos[3].equals("0.0") && datos[4].equals("0.0") && datos[5].equals("0.0") && datos[6].equals("0.0")){
             float[] gris = new float[3];
             Color.RGBtoHSB(204, 204, 204, gris);
             btnCont.setBackground(Color.getHSBColor(gris[0], gris[1], gris[2]));
@@ -180,14 +180,13 @@ public class Menu extends javax.swing.JFrame {
 
     private void btnContActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContActionPerformed
         // TODO add your handling code here:
+        clip2.start();
+        clip2.setFramePosition(0);
         this.setVisible(false);
-        //Acceso.abrirXML(xml);
         Juego game;
         try {
             game = new Juego();
             game.setVisible(true);
-            clip1.setFramePosition(0);
-            clip1.stop();
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
             Exceptions.printStackTrace(ex);
         }

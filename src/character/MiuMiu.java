@@ -15,16 +15,16 @@ public class MiuMiu {
     float energia, hambre, fuerza, suciedad, felicidad, experiencia;
     int nivel;
     
-    public MiuMiu(String name){
-        this.name=name;
-        this.hambre=10;
-        this.suciedad=10;
-        this.fuerza=0;
-        this.energia=90;
-        this.felicidad=10;
-        this.experiencia=0;
-        this.nivel=1;
-    }
+//    public MiuMiu(String name){
+//        this.name=name;
+//        this.hambre=10;
+//        this.suciedad=10;
+//        this.fuerza=0;
+//        this.energia=90;
+//        this.felicidad=10;
+//        this.experiencia=0;
+//        this.nivel=1;
+//    }
 
     public MiuMiu(String name, float hambre, float suciedad, float fuerza, float energia, float felicidad, float experiencia, int nivel) {
         this.name = name;

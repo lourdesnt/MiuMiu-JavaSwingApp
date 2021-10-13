@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <datos>
     <miumiu>
-        <nombre>n/a</nombre>
-        <hambre>0</hambre>
-        <suciedad>0</suciedad>
-        <fuerza>0</fuerza>
-        <energia>0</energia>
-        <felicidad>0</felicidad>
-        <exp>0</exp>
-        <nivel>0</nivel>
+        <nombre>kai</nombre>
+        <hambre>70.0</hambre>
+        <suciedad>70.0</suciedad>
+        <fuerza>60.0</fuerza>
+        <energia>30.0</energia>
+        <felicidad>16.0</felicidad>
+        <exp>45.0</exp>
+        <nivel>1</nivel>
     </miumiu>
 </datos>

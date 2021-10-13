@@ -66,8 +66,7 @@
                                   <Group type="103" groupAlignment="0" max="-2" attributes="0">
                                       <Component id="fieldName" pref="297" max="32767" attributes="0"/>
                                       <Component id="fieldAge" min="-2" pref="50" max="-2" attributes="0"/>
-                                      <Component id="validationName" alignment="0" max="32767" attributes="0"/>
-                                      <Component id="validationAge" alignment="0" max="32767" attributes="0"/>
+                                      <Component id="validationPanel" alignment="0" max="32767" attributes="0"/>
                                   </Group>
                               </Group>
                           </Group>
@@ -83,10 +82,7 @@
                                       <Component id="btnNext" min="-2" pref="95" max="-2" attributes="0"/>
                                       <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
                                   </Group>
-                                  <Group type="103" groupAlignment="1" max="-2" attributes="0">
-                                      <Component id="fieldMMName" alignment="0" max="32767" attributes="0"/>
-                                      <Component id="validationMMName" alignment="0" pref="297" max="32767" attributes="0"/>
-                                  </Group>
+                                  <Component id="fieldMMName" min="-2" pref="297" max="-2" attributes="0"/>
                               </Group>
                           </Group>
                           <EmptySpace min="-2" pref="155" max="-2" attributes="0"/>
@@ -100,27 +96,23 @@
               <Group type="102" alignment="0" attributes="0">
                   <EmptySpace min="-2" pref="50" max="-2" attributes="0"/>
                   <Component id="lbLogIn" min="-2" pref="40" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="65" max="-2" attributes="0"/>
+                  <EmptySpace type="separate" max="-2" attributes="0"/>
+                  <Component id="validationPanel" min="-2" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="18" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="fieldName" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="lbName" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="validationName" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace min="-2" pref="10" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="45" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="3" attributes="0">
                       <Component id="fieldAge" alignment="3" min="-2" max="-2" attributes="0"/>
                       <Component id="lbAge" alignment="3" min="-2" max="-2" attributes="0"/>
                   </Group>
-                  <EmptySpace min="-2" pref="5" max="-2" attributes="0"/>
-                  <Component id="validationAge" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="45" max="-2" attributes="0"/>
                   <Component id="lbLogIn1" min="-2" pref="40" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
                   <Component id="fieldMMName" min="-2" pref="45" max="-2" attributes="0"/>
-                  <EmptySpace max="-2" attributes="0"/>
-                  <Component id="validationMMName" min="-2" max="-2" attributes="0"/>
-                  <EmptySpace type="unrelated" max="-2" attributes="0"/>
+                  <EmptySpace min="-2" pref="46" max="-2" attributes="0"/>
                   <Group type="103" groupAlignment="0" attributes="0">
                       <Component id="btnNext" min="-2" pref="48" max="-2" attributes="0"/>
                       <Component id="btnBack" min="-2" pref="48" max="-2" attributes="0"/>
@@ -166,7 +158,7 @@
             <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="fieldNameKeyPressed"/>
           </Events>
         </Component>
-        <Component class="org.netbeans.validation.api.ui.swing.ValidationPanel" name="validationName">
+        <Component class="org.netbeans.validation.api.ui.swing.ValidationPanel" name="validationPanel">
           <Properties>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="d6" green="ec" red="fe" type="rgb"/>
@@ -197,13 +189,6 @@
             <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="fieldAgeKeyPressed"/>
           </Events>
         </Component>
-        <Component class="org.netbeans.validation.api.ui.swing.ValidationPanel" name="validationAge">
-          <Properties>
-            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="d6" green="ec" red="fe" type="rgb"/>
-            </Property>
-          </Properties>
-        </Component>
         <Component class="javax.swing.JLabel" name="lbLogIn1">
           <Properties>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
@@ -213,13 +198,6 @@
               <Color blue="99" green="66" red="ff" type="rgb"/>
             </Property>
             <Property name="text" type="java.lang.String" value="Tu MiuMiu se llamar&#xe1;..."/>
-          </Properties>
-        </Component>
-        <Component class="org.netbeans.validation.api.ui.swing.ValidationPanel" name="validationMMName">
-          <Properties>
-            <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-              <Color blue="d6" green="ec" red="fe" type="rgb"/>
-            </Property>
           </Properties>
         </Component>
         <Component class="javax.swing.JTextField" name="fieldMMName">
@@ -232,6 +210,9 @@
             </Property>
             <Property name="horizontalAlignment" type="int" value="0"/>
           </Properties>
+          <Events>
+            <EventHandler event="keyPressed" listener="java.awt.event.KeyListener" parameters="java.awt.event.KeyEvent" handler="fieldMMNameKeyPressed"/>
+          </Events>
         </Component>
         <Component class="javax.swing.JButton" name="btnNext">
           <Properties>

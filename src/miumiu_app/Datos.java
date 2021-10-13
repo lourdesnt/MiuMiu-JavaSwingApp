@@ -6,6 +6,7 @@
 package miumiu_app;
 
 import data.Acceso;
+import java.awt.Color;
 import java.awt.Font;
 import java.awt.FontFormatException;
 import java.awt.GraphicsEnvironment;
@@ -21,6 +22,8 @@ import javax.swing.event.ChangeListener;
 import static miumiu_app.Menu.clip1;
 import static miumiu_app.Menu.clip2;
 import static miumiu_app.Menu.pixelMplus;
+import org.netbeans.validation.api.builtin.stringvalidation.NombreValidator;
+import org.netbeans.validation.api.builtin.stringvalidation.NumeroValidator;
 import org.netbeans.validation.api.builtin.stringvalidation.StringValidators;
 import org.netbeans.validation.api.ui.ValidationGroup;
 import org.openide.util.Exceptions;
@@ -46,45 +49,32 @@ public class Datos extends javax.swing.JFrame {
         
         initComponents();
         
-        ValidationGroup group1 = validationName.getValidationGroup();
-        ValidationGroup group2 = validationAge.getValidationGroup();
-        ValidationGroup group3 = validationMMName.getValidationGroup();
-        group1.add(fieldName, StringValidators.REQUIRE_NON_EMPTY_STRING);
-        group2.add(fieldAge, StringValidators.REQUIRE_NON_EMPTY_STRING, StringValidators.REQUIRE_VALID_INTEGER, StringValidators.REQUIRE_NON_NEGATIVE_NUMBER);
-        group3.add(fieldMMName, StringValidators.REQUIRE_NON_EMPTY_STRING);
+        float[] gris = new float[3];
+        Color.RGBtoHSB(204, 204, 204, gris);
+        btnNext.setBackground(Color.getHSBColor(gris[0], gris[1], gris[2]));
+        btnNext.setEnabled(false);
+        
+        ValidationGroup group = validationPanel.getValidationGroup();
+        group.add(fieldName, StringValidators.REQUIRE_NON_EMPTY_STRING, new NombreValidator());
+        group.add(fieldAge, StringValidators.REQUIRE_NON_EMPTY_STRING, StringValidators.REQUIRE_VALID_INTEGER, StringValidators.REQUIRE_NON_NEGATIVE_NUMBER, new NumeroValidator());
+        group.add(fieldMMName, StringValidators.REQUIRE_NON_EMPTY_STRING, new NombreValidator());
     
-        validationName.addChangeListener(new ChangeListener() {
+        validationPanel.addChangeListener(new ChangeListener() {
             @Override
-            public void stateChanged(ChangeEvent e){
-                if(validationName.getProblem()==null){
+            public void stateChanged(ChangeEvent e) {
+                if(validationPanel.getProblem()==null){
+                    btnNext.setBackground(Color.WHITE);
                     btnNext.setEnabled(true);
                 } else {
+                    float[] gris = new float[3];
+                    Color.RGBtoHSB(204, 204, 204, gris);
+                    btnNext.setBackground(Color.getHSBColor(gris[0], gris[1], gris[2]));
                     btnNext.setEnabled(false);
                 }
             }
         });
         
-        validationMMName.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e){
-                if(validationMMName.getProblem()==null){
-                    btnNext.setEnabled(true);
-                } else {
-                    btnNext.setEnabled(false);
-                }
-            }
-        });
-        
-        validationAge.addChangeListener(new ChangeListener() {
-            @Override
-            public void stateChanged(ChangeEvent e){
-                if(validationAge.getProblem()==null){
-                    btnNext.setEnabled(true);
-                } else {
-                    btnNext.setEnabled(false);
-                }
-            }
-        });
+        Acceso.abrirXML(xml);
         
     }
 
@@ -101,12 +91,10 @@ public class Datos extends javax.swing.JFrame {
         lbLogIn = new javax.swing.JLabel();
         lbName = new javax.swing.JLabel();
         fieldName = new javax.swing.JTextField();
-        validationName = new org.netbeans.validation.api.ui.swing.ValidationPanel();
+        validationPanel = new org.netbeans.validation.api.ui.swing.ValidationPanel();
         lbAge = new javax.swing.JLabel();
         fieldAge = new javax.swing.JTextField();
-        validationAge = new org.netbeans.validation.api.ui.swing.ValidationPanel();
         lbLogIn1 = new javax.swing.JLabel();
-        validationMMName = new org.netbeans.validation.api.ui.swing.ValidationPanel();
         fieldMMName = new javax.swing.JTextField();
         btnNext = new javax.swing.JButton();
         btnBack = new javax.swing.JButton();
@@ -135,7 +123,7 @@ public class Datos extends javax.swing.JFrame {
             }
         });
 
-        validationName.setBackground(new java.awt.Color(254, 236, 214));
+        validationPanel.setBackground(new java.awt.Color(254, 236, 214));
 
         lbAge.setFont(pixelMplus);
         lbAge.setForeground(new java.awt.Color(163, 159, 225));
@@ -149,17 +137,18 @@ public class Datos extends javax.swing.JFrame {
             }
         });
 
-        validationAge.setBackground(new java.awt.Color(254, 236, 214));
-
         lbLogIn1.setFont(pixelMplus);
         lbLogIn1.setForeground(new java.awt.Color(255, 102, 153));
         lbLogIn1.setText("Tu MiuMiu se llamará...");
 
-        validationMMName.setBackground(new java.awt.Color(254, 236, 214));
-
         fieldMMName.setFont(new java.awt.Font("Verdana", 0, 24)); // NOI18N
         fieldMMName.setForeground(new java.awt.Color(153, 153, 153));
         fieldMMName.setHorizontalAlignment(javax.swing.JTextField.CENTER);
+        fieldMMName.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyPressed(java.awt.event.KeyEvent evt) {
+                fieldMMNameKeyPressed(evt);
+            }
+        });
 
         btnNext.setBackground(new java.awt.Color(255, 255, 255));
         btnNext.setForeground(new java.awt.Color(105, 171, 99));
@@ -202,8 +191,7 @@ public class Datos extends javax.swing.JFrame {
                                 .addGroup(panelISLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                                     .addComponent(fieldName, javax.swing.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE)
                                     .addComponent(fieldAge, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(validationName, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(validationAge, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
+                                    .addComponent(validationPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                         .addGap(98, 98, 98))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, panelISLayout.createSequentialGroup()
                         .addGroup(panelISLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -214,9 +202,7 @@ public class Datos extends javax.swing.JFrame {
                                     .addGap(70, 70, 70)
                                     .addComponent(btnNext, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addGap(16, 16, 16))
-                                .addGroup(panelISLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                                    .addComponent(fieldMMName, javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(validationMMName, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, 297, Short.MAX_VALUE))))
+                                .addComponent(fieldMMName, javax.swing.GroupLayout.PREFERRED_SIZE, 297, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addGap(155, 155, 155))))
         );
         panelISLayout.setVerticalGroup(
@@ -224,25 +210,21 @@ public class Datos extends javax.swing.JFrame {
             .addGroup(panelISLayout.createSequentialGroup()
                 .addGap(50, 50, 50)
                 .addComponent(lbLogIn, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(65, 65, 65)
+                .addGap(18, 18, 18)
+                .addComponent(validationPanel, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(18, 18, 18)
                 .addGroup(panelISLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(fieldName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lbName))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(validationName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(10, 10, 10)
+                .addGap(45, 45, 45)
                 .addGroup(panelISLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(fieldAge, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lbAge))
-                .addGap(5, 5, 5)
-                .addComponent(validationAge, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(45, 45, 45)
                 .addComponent(lbLogIn1, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(fieldMMName, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(validationMMName, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addGap(46, 46, 46)
                 .addGroup(panelISLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(btnNext, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnBack, javax.swing.GroupLayout.PREFERRED_SIZE, 48, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -266,16 +248,14 @@ public class Datos extends javax.swing.JFrame {
     private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
         clip2.start();
         clip2.setFramePosition(0);
-        Acceso.abrirXML(xml);
-        Acceso.guardarDatos(fieldMMName.getText(), 10, 10, 0, 90, 10, 0, 1);
+        MiuMiuName = fieldMMName.getText();
+        Acceso.guardarDatos(MiuMiuName, 10, 10, 0, 90, 10, 0, 1);
         Acceso.sobreescribir();
         Juego newGame;
         try {
             newGame = new Juego();
             newGame.setVisible(true);
             this.setVisible(false);
-            clip1.setFramePosition(0);
-            clip1.stop();
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
             Exceptions.printStackTrace(ex);
         }
@@ -283,30 +263,41 @@ public class Datos extends javax.swing.JFrame {
 
     private void fieldNameKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_fieldNameKeyPressed
         // TODO add your handling code here:
-        if(evt.getKeyCode()==KeyEvent.VK_ENTER){
+        if(evt.getKeyCode()==KeyEvent.VK_ENTER || evt.getKeyCode()==KeyEvent.VK_DOWN){
             fieldAge.requestFocus();
         }
     }//GEN-LAST:event_fieldNameKeyPressed
 
     private void fieldAgeKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_fieldAgeKeyPressed
         // TODO add your handling code here:
-        if(evt.getKeyCode()==KeyEvent.VK_ENTER){
+        if(evt.getKeyCode()==KeyEvent.VK_ENTER || evt.getKeyCode()==KeyEvent.VK_DOWN){
             fieldMMName.requestFocus();
+        } else if(evt.getKeyCode()==KeyEvent.VK_UP){
+            fieldName.requestFocus();
         }
     }//GEN-LAST:event_fieldAgeKeyPressed
 
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
         // TODO add your handling code here:
+        clip2.start();
+        clip2.setFramePosition(0);
+        clip1.stop();
         this.dispose();
         Menu m;
         try {
             m = new Menu();
             m.setVisible(true);
-            clip1.stop();
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
             Exceptions.printStackTrace(ex);
         }
     }//GEN-LAST:event_btnBackActionPerformed
+
+    private void fieldMMNameKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_fieldMMNameKeyPressed
+        // TODO add your handling code here:
+        if(evt.getKeyCode()==KeyEvent.VK_UP){
+            fieldAge.requestFocus();
+        }
+    }//GEN-LAST:event_fieldMMNameKeyPressed
 
     /**
      * @param args the command line arguments
@@ -375,8 +366,6 @@ public class Datos extends javax.swing.JFrame {
     private javax.swing.JLabel lbLogIn1;
     private javax.swing.JLabel lbName;
     private javax.swing.JPanel panelIS;
-    private org.netbeans.validation.api.ui.swing.ValidationPanel validationAge;
-    private org.netbeans.validation.api.ui.swing.ValidationPanel validationMMName;
-    private org.netbeans.validation.api.ui.swing.ValidationPanel validationName;
+    private org.netbeans.validation.api.ui.swing.ValidationPanel validationPanel;
     // End of variables declaration//GEN-END:variables
 }
