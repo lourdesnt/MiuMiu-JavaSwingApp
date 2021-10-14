@@ -1,22 +1,23 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package org.netbeans.validation.api.builtin.stringvalidation;
 
 import org.netbeans.validation.api.Problems;
 import org.openide.util.NbBundle;
 
 /**
- *
- * @author Lourdes
+ * Clase para validar los nombres del formulario
+ * @author Lourdes Navarro Tocón
  */
 public class NombreValidator extends StringValidator {
 
+    /**
+     * Método que permite validar el nombre
+     * @param problems Problemas de validación
+     * @param compName Nombre del componente
+     * @param model Texto del componente
+     */
     @Override
     public void validate(Problems problems, String compName, String model) {
-        if(model.isEmpty()){
+        if(model.isEmpty()){ //El campo del nombre no debe estar vacío
             String message = NbBundle.getMessage(NombreValidator.class, "MSG_MAY_NOT_BE_EMPTY" , compName);
             problems.add(message);
         }

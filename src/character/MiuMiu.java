@@ -1,31 +1,27 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package character;
 
 /**
- *
+ * Clase con los datos del personaje MiuMiu
  * @author Lourdes
  */
 public class MiuMiu {
     
-    String name;
+    String name; //Nombre del personaje
+    //Valores de energia, hambre, fuerza, suciedad, felicidad, experiencia y nivel
     float energia, hambre, fuerza, suciedad, felicidad, experiencia;
     int nivel;
     
-//    public MiuMiu(String name){
-//        this.name=name;
-//        this.hambre=10;
-//        this.suciedad=10;
-//        this.fuerza=0;
-//        this.energia=90;
-//        this.felicidad=10;
-//        this.experiencia=0;
-//        this.nivel=1;
-//    }
-
+    /**
+     * Constructor que admite 8 parámetros
+     * @param name Nombre del personaje
+     * @param hambre Hambre del personaje
+     * @param suciedad Suciedad del personaje
+     * @param fuerza Fuerza del personaje
+     * @param energia Energia del personaje
+     * @param felicidad Felicidad del personaje
+     * @param experiencia Experiencia del personaje
+     * @param nivel Nivel del personaje
+     */
     public MiuMiu(String name, float hambre, float suciedad, float fuerza, float energia, float felicidad, float experiencia, int nivel) {
         this.name = name;
         this.hambre = hambre;
@@ -37,6 +33,10 @@ public class MiuMiu {
         this.nivel = nivel;
     }
     
+    /**
+     * Método que suma valores o resta a los stats del personaje cuando come
+     * @return true si ha podido comer, false si no
+     */
     public boolean comer(){
         boolean res = addHambre(-10);
         if (res){
@@ -48,6 +48,10 @@ public class MiuMiu {
         return res;
     }
     
+    /**
+     * Método que suma valores o resta a los stats del personaje cuando entrena
+     * @return true si ha podido entrenar, false si no
+     */
     public boolean entrenar(){
         boolean res = addFuerza(10);
         if (res){
@@ -62,18 +66,27 @@ public class MiuMiu {
         return res;
     }
     
+    /**
+     * Método que suma valores o resta a los stats del personaje cuando se baña
+     */
     public void limpiar(){
         setSuciedad(0);
         addFelicidad(2);
         setExperiencia(experiencia+2);
     }
     
+    /**
+     * Método que suma valores o resta a los stats del personaje cuando duerme
+     */
     public void dormir(){
         setEnergia(100);
         addFelicidad(3);
         setExperiencia(experiencia+1);
     }
     
+    /**
+     * Método que pone todos los valores de los stats a cero, significando eso que se ha muerto
+     */
     public void muerto(){
         setEnergia(0);
         setHambre(0);
@@ -82,6 +95,8 @@ public class MiuMiu {
         setFelicidad(0);
         setExperiencia(0);
     }
+    
+    //Getters y setters
     
     public float getEnergia() {
         return energia;
@@ -102,10 +117,10 @@ public class MiuMiu {
 
     public boolean setHambre(float hambre) {
         boolean res = true;
-        if(hambre<0){
+        if(hambre<0){ //Controlamos que no sea negativo
             return false;
         }
-        if(hambre>100){
+        if(hambre>100){ //Controlamos que el máx sea 100
             this.hambre=100;
         } else {
             this.hambre=hambre;
@@ -164,7 +179,7 @@ public class MiuMiu {
            this.felicidad=0;
            return false;
         }
-        if(suciedad>=100 && this.felicidad<felicidad){
+        if(suciedad>=100 && this.felicidad<felicidad){ //Si la suciedad está a 100 o si la felicidad a añadir/restar es mayor que la actual no se añade felicidad
             return false;
         }
        
@@ -182,7 +197,7 @@ public class MiuMiu {
 
     public void setExperiencia(float experiencia) {
         if(getFelicidad()>0){
-            this.experiencia = experiencia +getFuerza()*0.1f;
+            this.experiencia = experiencia +getFuerza()*0.1f; //La experiencia es proporcional a la fuerza del personaje
         }
     }
 

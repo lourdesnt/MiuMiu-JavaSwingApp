@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package miumiu_app;
 
 import data.Acceso;
@@ -21,21 +16,25 @@ import javax.swing.ImageIcon;
 import org.openide.util.Exceptions;
 
 /**
- *
- * @author Lourdes
+ * Ventana del menú principal de la aplicación
+ * 
+ * @author Lourdes Navarro Tocón
  */
 public class Menu extends javax.swing.JFrame {
     
-    ImageIcon img;
-    File xml;
-    static Font pixelMplus;
-    AudioInputStream audioMenu;
-    static Clip clip1;
-    AudioInputStream audioClick;
-    static Clip clip2;
+    ImageIcon img; //Imagen del icono de la ventana
+    File xml; //Archivo xml donde se guardan los datos del personaje
+    static Font pixelMplus; //Fuente a incluir
+    AudioInputStream audioMenu; //Audio de la música del menú
+    static Clip clip1; //Clip de la música del menú
+    AudioInputStream audioClick; //Audio del sonido de los botones
+    static Clip clip2; //Clip del sonido de los botonoes
     
     /**
-     * Creates new form MiuMiuPpal
+     * Constructor
+     * @throws javax.sound.sampled.UnsupportedAudioFileException UnsupportedAudioFileException
+     * @throws java.io.IOException IOException
+     * @throws javax.sound.sampled.LineUnavailableException LineUnavailableException
      */
     public Menu() throws UnsupportedAudioFileException, IOException, LineUnavailableException {
         xml = new File("src/data/save.xml");
@@ -50,11 +49,14 @@ public class Menu extends javax.swing.JFrame {
         
         clip1.open(audioMenu);
         clip2.open(audioClick);
+        //Se reproduce el clip del menú en loop
         clip1.start();
         clip1.loop(-1);
         
+        //Abrimos el archivo xml para obtener los datos y manejarlos
         Acceso.abrirXML(xml);
         String[] datos = Acceso.obtenerDatos();
+        //Si los datos del xml son los predeterminados significa que no hay ninguna partida guardada, por lo que no se puede continuar
         if(datos[1].equals("0.0") && datos[1].equals("0.0") && datos[2].equals("0.0") && datos[3].equals("0.0") && datos[4].equals("0.0") && datos[5].equals("0.0") && datos[6].equals("0.0")){
             float[] gris = new float[3];
             Color.RGBtoHSB(204, 204, 204, gris);
@@ -164,28 +166,36 @@ public class Menu extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Método para iniciar una nueva partida cuando pulsamos el botón de "Nuevo"
+     * @param evt Action Event
+     */
     private void btnNewActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNewActionPerformed
         // TODO add your handling code here:
-        clip2.start();
+        clip2.start(); //Sonido del botón
         clip2.setFramePosition(0);
         this.setVisible(false);
         Datos init;
         try {
-            init = new Datos();
+            init = new Datos(); //Al pulsar "Nuevo" nos llevará a la ventana del formulario
             init.setVisible(true);
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
             Exceptions.printStackTrace(ex);
         }
     }//GEN-LAST:event_btnNewActionPerformed
 
+    /**
+     * Método para continuar la partida anteriormente guardada al pulsar el botón de "Continuar"
+     * @param evt Action Event
+     */
     private void btnContActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContActionPerformed
         // TODO add your handling code here:
-        clip2.start();
+        clip2.start(); //Sonido del botón
         clip2.setFramePosition(0);
-        this.setVisible(false);
+        this.setVisible(false); //Cierra la ventana del menú y abre la de la partida
         Juego game;
         try {
-            game = new Juego();
+            game = new Juego(); 
             game.setVisible(true);
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
             Exceptions.printStackTrace(ex);
@@ -231,6 +241,7 @@ public class Menu extends javax.swing.JFrame {
             }
         });
         
+        //Definimos la fuente que importamos
         try{
             pixelMplus = Font.createFont(Font.TRUETYPE_FONT, new File("src/resources/PixelMplus10-Regular.ttf")).deriveFont(30f);	
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();

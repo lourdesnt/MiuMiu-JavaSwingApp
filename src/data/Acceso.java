@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package data;
 
 import java.io.File;
@@ -20,12 +15,17 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 /**
- *
- * @author Lourdes
+ * Clase que contiene diferentes métodos para el manejo del fichero xml
+ * @author Lourdes Navarro Tocón
  */
 public class Acceso {
     static Document doc;
     
+    /**
+     * Método para abrir el fichero xml
+     * @param fichero XML
+     * @return 0 si se ha abierto correctamente, -1 si ha habido error
+     */
     public static int abrirXML(File fichero){
         doc = null;
         try{
@@ -42,6 +42,11 @@ public class Acceso {
         }
     }
     
+    /**
+     * Método para procesar un nodo del archivo xml
+     * @param node Nodo a procesar
+     * @return Datos del nodo
+     */
     public static String[] procesar(Node node){
         String[] datos = new String[8];
         Node temp = null;
@@ -57,6 +62,10 @@ public class Acceso {
         return datos;
     }
     
+    /**
+     * Método para obtener los datos del fichero xml
+     * @return Datos
+     */
     public static String[] obtenerDatos(){
         String[] datosNodos = null;
         Node node;
@@ -71,6 +80,18 @@ public class Acceso {
         return datosNodos;
     }
     
+    /**
+     * Método para guardar los datos del personaje en el fichero xml
+     * @param nombre Nombre del personaje
+     * @param hambre Hambre del personaje
+     * @param suciedad Suciedad del personaje
+     * @param fuerza Fuerza del personaje
+     * @param energia Energia del personaje
+     * @param felicidad Felicidad del personaje
+     * @param exp Experiencia del personaje
+     * @param nivel Nivel del personaje
+     * @return 0 si se han guardado los datos correctamente, -1 si ha habido error
+     */
     public static int guardarDatos(String nombre, float hambre, float suciedad, float fuerza, float energia, float felicidad, float exp, int nivel){
         try {
             Node miumiu = doc.getElementsByTagName("miumiu").item(0);
@@ -91,11 +112,10 @@ public class Acceso {
             return -1;
         }
     }
-    
-//    public int aniadirDOM(String nombre, float hambre, float suciedad, float fuerza, float energia, float felicidad, float exp, int nivel){
-//        return aniadir(doc, nombre, hambre, suciedad, fuerza, energia, felicidad, exp, nivel);
-//    }
    
+    /**
+     * Método para sobreescribir el fichero xml
+     */
     public static void sobreescribir() {
 	try {
             TransformerFactory transformerFactory = TransformerFactory.newInstance();

@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package miumiu_app;
 
 import character.MiuMiu;
@@ -27,22 +22,27 @@ import static miumiu_app.Menu.pixelMplus;
 import org.openide.util.Exceptions;
 
 /**
- *
- * @author Lourdes
+ * Ventana del juego
+ * @author Lourdes Navarro Tocón
  */
 public class Juego extends javax.swing.JFrame {
     
-    File xml;
-    ImageIcon img, standing, eating, sleeping, training, cleaning, dirty, lvlup, dead, state;
-    MiuMiu m;
+    File xml; //Archivo xml donde se guardan los datos del personaje
+    ImageIcon img, standing, eating, sleeping, training, cleaning, dirty, lvlup, dead, state; //Imágenes a incluir
+    MiuMiu m; //Personaje
+    //Timer y timertask
     Timer timer;
     TimerTask tarea;
-    AudioInputStream audioEat, audioClean, audioTrain, audioSleep, audioDirty, audioLevelUp, audioDead, audioWin;
+    //Sonidos para las diferentes acciones del juego
+    AudioInputStream audioEat, audioClean, audioTrain, audioSleep, audioDirty, audioLevelUp, audioDead, audioWin; 
     Clip clipEat, clipClean, clipTrain, clipSleep, clipDirty, clipLevelUp, clipDead, clipWin;
-    boolean doingAction;
+    boolean doingAction; //Booleano que controla si el personaje se encuentra realizando una acción
 
     /**
-     * Creates new form Juego
+     * Constructor
+     * @throws javax.sound.sampled.UnsupportedAudioFileException UnsupportedAudioFileException
+     * @throws java.io.IOException IOException
+     * @throws javax.sound.sampled.LineUnavailableException LineUnavailableException
      */
     public Juego() throws UnsupportedAudioFileException, IOException, LineUnavailableException {
         xml = new File("src/data/save.xml");
@@ -81,20 +81,24 @@ public class Juego extends javax.swing.JFrame {
         
         state = standing;
         
+        //Abrimos el archivo xml para obtener los datos y manejarlos
         Acceso.abrirXML(xml);
         String[] datos = Acceso.obtenerDatos();
-        m = new MiuMiu(datos[0], Float.parseFloat(datos[1]), Float.parseFloat(datos[2]), Float.parseFloat(datos[3]), Float.parseFloat(datos[4]), Float.parseFloat(datos[5]),Float.parseFloat(datos[6]),Integer.parseInt(datos[7]));
+        m = new MiuMiu(datos[0], Float.parseFloat(datos[1]), Float.parseFloat(datos[2]), Float.parseFloat(datos[3]), Float.parseFloat(datos[4]), Float.parseFloat(datos[5]),Float.parseFloat(datos[6]),Integer.parseInt(datos[7])); //Declaramos el objeto de la clase MiuMiu pasándole los valores guardados en el xml
         
-        doingAction = false;
+        doingAction = false; //El personaje no está realizando ninguna acción por defecto
         
         initComponents();
         
+        //El sonido del menú se pausa
         clip1.setFramePosition(0);
         clip1.stop();
         
-        lbMiuName.setText(m.getName());
+        //Colocamos las etiquetas del nombre del MiuMiu y su nivel
+        lbMiuName.setText(m.getName()); 
         lbMiuLevel.setText("Nivel "+m.getNivel());
         
+        //Este botón y etiqueta se habilitan cuando el personaje muere
         btnRenacer.setVisible(false);
         lbEnd.setVisible(false);
         lbEnd1.setVisible(false);
@@ -102,13 +106,16 @@ public class Juego extends javax.swing.JFrame {
         updateProgress();
     }
     
+    /**
+     * Método que actualiza los valores de los stats del personaje y los refleja en las barras de progreso
+     */
     private void updateProgress(){
        progrHambre.setValue((int) m.getHambre());
        progrSuciedad.setValue((int)m.getSuciedad());
        progrFuerza.setValue((int)m.getFuerza());
        progrEnergia.setValue((int)m.getEnergia());
        if(m.getEnergia()<20){
-           lbEnergia.setForeground(Color.red);
+           lbEnergia.setForeground(Color.red); //Para avisar de que la energía del personaje es muy baja y puede morir
        } else {
            float[] gris = new float[3];
            Color.RGBtoHSB(153, 153, 153, gris);
@@ -118,8 +125,11 @@ public class Juego extends javax.swing.JFrame {
        progrExp.setValue((int)m.getExperiencia());
     }
     
+    /**
+     * Método para que el personaje suba de nivel
+     */
     private void levelUp(){
-        if(m.getExperiencia()>=100 && !doingAction){
+        if(m.getExperiencia()>=100 && !doingAction){ //Para que suba de nivel se debe alcanzar 100 de experiencia
             doingAction = true;
             int nivel = m.getNivel();
             m.setNivel(nivel+1);
@@ -131,7 +141,7 @@ public class Juego extends javax.swing.JFrame {
             clipLevelUp.start();
             clipLevelUp.setFramePosition(0);
 
-            tarea = new TimerTask(){
+            tarea = new TimerTask(){ //Utilizamos el timertask y el timer para que la imagen de la acción dure determinado tiempo
             @Override
                 public void run() {
                     MiuCh.setIcon(state);
@@ -145,8 +155,11 @@ public class Juego extends javax.swing.JFrame {
         }
     }
     
+    /**
+     * Método para que el personaje muera
+     */
     private void muerto(){
-        if(m.getEnergia()<0 && !doingAction){
+        if(m.getEnergia()<0 && !doingAction){ //Para que muera la energía debe ser menor que cero
             doingAction = true;
             MiuCh.setIcon(dead);
             btnRenacer.setVisible(true);
@@ -163,8 +176,11 @@ public class Juego extends javax.swing.JFrame {
         }
     }
     
+    /**
+     * Método para que el personaje se ensucie
+     */
     private void sucio(){
-        if(m.getSuciedad()==100 && !doingAction){
+        if(m.getSuciedad()==100 && !doingAction){ //Para que el personaje esté sucio su suciedad debe llegar a 100
             state = dirty;
             clipDirty.start();
             clipDirty.setFramePosition(0);
@@ -172,8 +188,11 @@ public class Juego extends javax.swing.JFrame {
         }
     }
     
+    /**
+     * Método para que el personaje esté hambriento
+     */
     private void hambriento(){
-        if(m.getHambre()>=100){
+        if(m.getHambre()>=100){ //Si su hambre es igual o mayor a 100, la energía irá disminuyendo en 10 por cada acción hasta que su hambre baje
             m.addEnergia(-10);
         }
     }
@@ -426,25 +445,29 @@ public class Juego extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Método que permite alimentar al personaje al pulsar el botón de comida
+     * @param evt Action Event
+     */
     private void btnEatActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEatActionPerformed
         // TODO add your handling code here:
         if(!doingAction){
             boolean res = m.comer();
-            if(res){
+            if(res){ //Comprobamos que pueda comer
                 doingAction = true;
                 MiuCh.setIcon(eating);
                 clipEat.start();
                 clipEat.setFramePosition(0);
 
-                tarea = new TimerTask(){
+                tarea = new TimerTask(){ //Utilizamos el timertask y el timer para que la imagen de la acción dure determinado tiempo
                 @Override
                     public void run() {
                         doingAction = false;
-                        sucio();
+                        sucio(); //Comprobamos si se ensucia
                         MiuCh.setIcon(state);
-                        levelUp();
-                        muerto();
-                        updateProgress();
+                        levelUp(); //Comprobamos si sube de nivel
+                        muerto(); //Comprobamos si se muere
+                        updateProgress(); //Actualizamos los valores
                     }
                 };
         
@@ -454,9 +477,13 @@ public class Juego extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnEatActionPerformed
 
+    /**
+     * Método que permite limpiar al personaje al pulsar el botón de baño
+     * @param evt Action Event
+     */
     private void btnBathActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBathActionPerformed
         // TODO add your handling code here:
-        if(m.getSuciedad()>0 && !doingAction){
+        if(m.getSuciedad()>0 && !doingAction){ //Si el personaje tiene suciedad y no está realizando ninguna acción, se procede a limpiarlo
             doingAction = true;
             m.limpiar();
             state = standing;
@@ -464,14 +491,14 @@ public class Juego extends javax.swing.JFrame {
             clipClean.start();
             clipClean.setFramePosition(0);
 
-            tarea = new TimerTask(){
+            tarea = new TimerTask(){ //Utilizamos el timertask y el timer para que la imagen de la acción dure determinado tiempo
             @Override
                 public void run() {
                     MiuCh.setIcon(state);
                     doingAction = false;
-                    hambriento();
-                    levelUp();
-                    updateProgress();
+                    hambriento(); //Comprobamos si está hambriento
+                    levelUp(); //Comprobamos si sube de nivel
+                    updateProgress(); //Actualizamos los valores
                 }
             };
         
@@ -480,17 +507,21 @@ public class Juego extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnBathActionPerformed
 
+    /**
+     * Método que permite entrenar al personaje al pulsar el botón de entrenar
+     * @param evt Action Event
+     */
     private void btnTrainActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTrainActionPerformed
         // TODO add your handling code here:
         if(!doingAction){
             boolean res = m.entrenar();
-            if(res){
+            if(res){ //Comprobamos que pueda entrenar
                 doingAction = true;
                 MiuCh.setIcon(training);
                 clipTrain.start();
                 clipTrain.setFramePosition(0);
 
-                tarea = new TimerTask(){
+                tarea = new TimerTask(){ //Utilizamos el timertask y el timer para que la imagen de la acción dure determinado tiempo
                     @Override
                     public void run() {
                         doingAction = false;
@@ -509,24 +540,28 @@ public class Juego extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnTrainActionPerformed
 
+    /**
+     * Método que permite que el personaje duerma al pulsar el botón de dormir
+     * @param evt Action Event
+     */
     private void btnSleepActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSleepActionPerformed
         // TODO add your handling code here:
-        if(m.getEnergia()<50 && !doingAction){
+        if(m.getEnergia()<50 && !doingAction){ //Si su energia es menor de 50 y no está realizando ninguna acción, el personaje puede dormir
            doingAction = true;
            m.dormir();
            MiuCh.setIcon(sleeping);
            clipSleep.start();
            clipSleep.setFramePosition(0);
 
-            tarea = new TimerTask(){
+            tarea = new TimerTask(){ //Utilizamos el timertask y el timer para que la imagen de la acción dure determinado tiempo
             @Override
                 public void run() {
                     doingAction = false;
-                    hambriento();
-                    sucio();
+                    hambriento(); //Comprobamos si está hambriento
+                    sucio(); //Comprobamos si está sucio
                     MiuCh.setIcon(state);
-                    levelUp();
-                    updateProgress();
+                    levelUp(); //Comprobamos si sube de nivel
+                    updateProgress(); //Actualizamos los valores
                 }
             };
         
@@ -535,16 +570,20 @@ public class Juego extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnSleepActionPerformed
 
+    /**
+     * Método que permite salir al menú y guardar la partida
+     * @param evt Action Event
+     */
     private void btnExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExitActionPerformed
         // TODO add your handling code here:
-        clip2.start();
+        clip2.start(); //Sonido de botón
         clip2.setFramePosition(0);
-        Acceso.guardarDatos(m.getName(), m.getHambre(), m.getSuciedad(), m.getFuerza(), m.getEnergia(), m.getFelicidad(), m.getExperiencia(), m.getNivel());
+        Acceso.guardarDatos(m.getName(), m.getHambre(), m.getSuciedad(), m.getFuerza(), m.getEnergia(), m.getFelicidad(), m.getExperiencia(), m.getNivel()); //Guardamos los datos antes de salir
         Acceso.sobreescribir();
         Menu m;
         try {
-            m = new Menu();
-            dialogPause.setVisible(false);
+            m = new Menu(); 
+            dialogPause.setVisible(false); //Se cierra la ventana de pausa y de la partida y se abre la del menú
             this.dispose();
             m.setVisible(true);
         } catch (IOException | UnsupportedAudioFileException | LineUnavailableException ex) {
@@ -552,38 +591,49 @@ public class Juego extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnExitActionPerformed
 
+    /**
+     * Método que permite volver a empezar la partida una vez que el personaje se ha muerto al darle al botón de renacer
+     * @param evt Action Event
+     */
     private void btnRenacerActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRenacerActionPerformed
         // TODO add your handling code here:
-        clip2.start();
+        clip2.start(); //Sonido del botón
         clip2.setFramePosition(0);
         Datos d;
         try {
-            d = new Datos();
-            Acceso.guardarDatos("none", 0, 0, 0, 0, 0, 0, 0);
+            d = new Datos(); 
+            Acceso.guardarDatos("none", 0, 0, 0, 0, 0, 0, 0); //Establecemos los stats del personaje por defecto
             Acceso.sobreescribir();
             this.dispose();
-            d.setVisible(true);
+            d.setVisible(true); //Se cierra la ventana de la partida y se abre la del formulario
         } catch (IOException | UnsupportedAudioFileException | LineUnavailableException ex) {
             Exceptions.printStackTrace(ex);
         }
-        clip1.start();
+        clip1.start(); //Música del menú
         clip1.loop(-1);
     }//GEN-LAST:event_btnRenacerActionPerformed
 
+    /**
+     * Método que permite pausar el juego al darle al botón de pausa
+     * @param evt Action Event
+     */
     private void btnPauseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPauseActionPerformed
         // TODO add your handling code here:
-        clip2.start();
+        clip2.start(); //Sonido del botón
         clip2.setFramePosition(0);
-        dialogPause.setVisible(true);
+        dialogPause.setVisible(true); //Se abre la ventana de pausa
         dialogPause.isModal();
     }//GEN-LAST:event_btnPauseActionPerformed
 
+    /**
+     * Método que permite continuar la partida al pulsar el botón de continuar
+     * @param evt Action Event
+     */
     private void btnContActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContActionPerformed
         // TODO add your handling code here:
-        clip2.start();
+        clip2.start(); //Sonido del botón
         clip2.setFramePosition(0);
-        clip2.stop();
-        dialogPause.setVisible(false);
+        dialogPause.setVisible(false); //Se cierra la ventana de pausa
     }//GEN-LAST:event_btnContActionPerformed
 
     /**
@@ -624,6 +674,7 @@ public class Juego extends javax.swing.JFrame {
             }
         });
         
+        //Definimos la fuente que importamos
         try{
             pixelMplus = Font.createFont(Font.TRUETYPE_FONT, new File("src/resources/PixelMplus10-Regular.ttf")).deriveFont(30f);	
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();

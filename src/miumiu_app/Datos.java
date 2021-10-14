@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package miumiu_app;
 
 import data.Acceso;
@@ -29,17 +24,21 @@ import org.netbeans.validation.api.ui.ValidationGroup;
 import org.openide.util.Exceptions;
 
 /**
- *
- * @author Lourdes
+ * Ventana del formulario para comenzar una nueva partida
+ * @author Lourdes Navarro Tocón
  */
 public class Datos extends javax.swing.JFrame {
     
-    File xml;
-    ImageIcon img;
-    static String MiuMiuName;
+    File xml; //Imagen del icono de la ventana
+    ImageIcon img; //Archivo xml donde se guardan los datos del personaje
+    static String MiuMiuName; //String donde se va a guardar el nombre del personaje
 
     /**
-     * Creates new form IniciarJuego
+     * Constructor
+     * 
+     * @throws javax.sound.sampled.UnsupportedAudioFileException UnsupportedAudioFileException
+     * @throws java.io.IOException IOException
+     * @throws javax.sound.sampled.LineUnavailableException LineUnavailableException
      */
     @SuppressWarnings("unchecked")
     public Datos() throws UnsupportedAudioFileException, IOException, LineUnavailableException {
@@ -52,8 +51,12 @@ public class Datos extends javax.swing.JFrame {
         float[] gris = new float[3];
         Color.RGBtoHSB(204, 204, 204, gris);
         btnNext.setBackground(Color.getHSBColor(gris[0], gris[1], gris[2]));
-        btnNext.setEnabled(false);
+        btnNext.setEnabled(false); //Ponemos el botón para continuar deshabilitado por defecto
         
+        //Uso de la librería Validation API.
+        //Colocamos en la ventana un panel donde se mostrarán los mensajes de error
+        //Definimos lo que queremos validar en cada campo del formulario
+        //El botón de continuar no se habilitará hasta que sea válido el contenido de los campos a rellenar
         ValidationGroup group = validationPanel.getValidationGroup();
         group.add(fieldName, StringValidators.REQUIRE_NON_EMPTY_STRING, new NombreValidator());
         group.add(fieldAge, StringValidators.REQUIRE_NON_EMPTY_STRING, StringValidators.REQUIRE_VALID_INTEGER, StringValidators.REQUIRE_NON_NEGATIVE_NUMBER, new NumeroValidator());
@@ -74,6 +77,7 @@ public class Datos extends javax.swing.JFrame {
             }
         });
         
+        //Abrimos el archivo xml para obtener los datos y manejarlos 
         Acceso.abrirXML(xml);
         
     }
@@ -245,15 +249,19 @@ public class Datos extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    /**
+     * Método para empezar la partida una vez rellenado el formulario al darle al botón de siguiente
+     * @param evt 
+     */
     private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
-        clip2.start();
+        clip2.start(); //Sonido del botón
         clip2.setFramePosition(0);
-        MiuMiuName = fieldMMName.getText();
-        Acceso.guardarDatos(MiuMiuName, 10, 10, 0, 90, 10, 0, 1);
+        MiuMiuName = fieldMMName.getText(); //Almacenamos el nombre del campo del nombre del personaje
+        Acceso.guardarDatos(MiuMiuName, 10, 10, 0, 90, 10, 0, 1); //Guardamos el nombre y los stats por defecto
         Acceso.sobreescribir();
         Juego newGame;
         try {
-            newGame = new Juego();
+            newGame = new Juego(); //Cerramos el formulario y comienza una nueva partida
             newGame.setVisible(true);
             this.setVisible(false);
         } catch (UnsupportedAudioFileException | IOException | LineUnavailableException ex) {
@@ -261,6 +269,10 @@ public class Datos extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnNextActionPerformed
 
+    /**
+     * Método para acceder al siguiente campo del formulario al pulsar las teclas de enter y abajo
+     * @param evt Key Event
+     */
     private void fieldNameKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_fieldNameKeyPressed
         // TODO add your handling code here:
         if(evt.getKeyCode()==KeyEvent.VK_ENTER || evt.getKeyCode()==KeyEvent.VK_DOWN){
@@ -268,6 +280,11 @@ public class Datos extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_fieldNameKeyPressed
 
+    /**
+     * Método para acceder al anterior campo del formulario al pulsar la tecla arriba y al siguiente
+     * al pulsar las teclas de enter y abajo
+     * @param evt Key Event
+     */
     private void fieldAgeKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_fieldAgeKeyPressed
         // TODO add your handling code here:
         if(evt.getKeyCode()==KeyEvent.VK_ENTER || evt.getKeyCode()==KeyEvent.VK_DOWN){
@@ -277,12 +294,16 @@ public class Datos extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_fieldAgeKeyPressed
 
+    /**
+     * Método para volver a la ventana del menú al pulsar la tecla de ir atrás
+     * @param evt Action Event
+     */
     private void btnBackActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBackActionPerformed
         // TODO add your handling code here:
-        clip2.start();
+        clip2.start(); //Sonido del botón
         clip2.setFramePosition(0);
         clip1.stop();
-        this.dispose();
+        this.dispose(); //Cerramos la ventana del formulario y abrimos una nueva ventana del menú
         Menu m;
         try {
             m = new Menu();
@@ -292,6 +313,10 @@ public class Datos extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnBackActionPerformed
 
+    /**
+     * Método para acceder al anterior campo del formulario al pulsar la tecla de arriba
+     * @param evt Key Event
+     */
     private void fieldMMNameKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_fieldMMNameKeyPressed
         // TODO add your handling code here:
         if(evt.getKeyCode()==KeyEvent.VK_UP){
@@ -301,6 +326,9 @@ public class Datos extends javax.swing.JFrame {
 
     /**
      * @param args the command line arguments
+     * @throws java.io.IOException IOException
+     * @throws javax.sound.sampled.UnsupportedAudioFileException UnsupportedAudioFileException
+     * @throws javax.sound.sampled.LineUnavailableException LineUnavailableException
      */
     public static void main(String args[]) throws IOException, UnsupportedAudioFileException, LineUnavailableException {
         /* Set the Nimbus look and feel */
@@ -338,6 +366,7 @@ public class Datos extends javax.swing.JFrame {
             }
         });
         
+        //Establecemos el Locale de la aplicación
         Locale.setDefault(new Locale("es", "ES"));
         try {
             new Datos().setVisible(true);
@@ -345,6 +374,7 @@ public class Datos extends javax.swing.JFrame {
             Exceptions.printStackTrace(ex);
         }
         
+        //Definimos la fuente que importamos
         try{
             pixelMplus = Font.createFont(Font.TRUETYPE_FONT, new File("src/resources/PixelMplus10-Regular.ttf")).deriveFont(30f);	
             GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
